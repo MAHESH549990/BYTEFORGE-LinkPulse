@@ -1,3 +1,4 @@
+
 <%- layout("boilerplate/boiler") %>
 
 <div class="login-page">
@@ -14,30 +15,32 @@
             </p>
         </div>
 
-        <form action="/login" method="POST">
+        <form action="/user/login" method="POST">
 
+            <!-- Username -->
             <div class="mb-3">
-                <label for="email" class="form-label fw-semibold">
-                    Email Address
+                <label for="username" class="form-label fw-semibold">
+                    Username
                 </label>
 
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i class="fa-regular fa-envelope"></i>
+                        <i class="fa-regular fa-user"></i>
                     </span>
 
                     <input
-                        type="email"
+                        type="text"
                         class="form-control"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        autocomplete="email"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
                         required
                     >
                 </div>
             </div>
 
+            <!-- Password -->
             <div class="mb-3">
                 <label for="password" class="form-label fw-semibold">
                     Password
@@ -78,7 +81,7 @@
         <div class="text-center mt-4">
             <p class="text-secondary mb-0">
                 Don't have an account?
-                <a href="/signup" class="signup-link fw-semibold">
+                <a href="/user/register" class="signup-link fw-semibold">
                     Create Account
                 </a>
             </p>
