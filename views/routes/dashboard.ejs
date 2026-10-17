@@ -1,0 +1,205 @@
+ 
+<%- layout("boilerplate/boiler") %>
+
+<div class="dashboard-page">
+    <div class="container-fluid py-4 px-4">
+    <!-- Dashboard Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Dashboard</h2>
+            <p class="text-secondary mb-0">Welcome back! Here's your link performance.</p>
+        </div>
+
+        <a href="/links/new" class="btn btn-primary px-4">
+            <i class="fa-solid fa-plus me-2"></i>Create Short Link
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary">Total Links</span>
+                        <i class="fa-solid fa-link stat-icon"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">24</h3>
+                    <small class="text-secondary">Links you have created</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary">Total Clicks</span>
+                        <i class="fa-solid fa-arrow-pointer stat-icon"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">1,284</h3>
+                    <small class="text-secondary">Clicks across your links</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary">Active Links</span>
+                        <i class="fa-solid fa-circle-check stat-icon"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">18</h3>
+                    <small class="text-secondary">Links currently active</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary">Campaigns</span>
+                        <i class="fa-solid fa-bullhorn stat-icon"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">6</h3>
+                    <small class="text-secondary">Your tracked campaigns</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">Quick Actions</h5>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/links/new" class="btn btn-primary">
+                    <i class="fa-solid fa-link me-2"></i>Shorten URL
+                </a>
+
+                <a href="/analytics" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-chart-line me-2"></i>View Analytics
+                </a>
+
+                <a href="/campaigns" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-bullhorn me-2"></i>Manage Campaigns
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Links -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                <div>
+                    <h5 class="fw-bold mb-1">Recent Links</h5>
+                    <p class="text-secondary small mb-0">Your recently created short URLs</p>
+                </div>
+
+                <a href="/links" class="text-decoration-none">View All</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Short Link</th>
+                            <th>Original URL</th>
+                            <th>Clicks</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="/summer-sale" class="fw-semibold text-decoration-none">
+                                    /summer-sale
+                                </a>
+                            </td>
+                            <td class="original-url text-truncate">
+                                https://example.com/products/summer
+                            </td>
+                            <td>428</td>
+                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
+                            <td>Oct 15, 2026</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <a href="/instagram" class="fw-semibold text-decoration-none">
+                                    /instagram
+                                </a>
+                            </td>
+                            <td class="original-url text-truncate">
+                                https://example.com/instagram-campaign
+                            </td>
+                            <td>316</td>
+                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
+                            <td>Oct 14, 2026</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <a href="/portfolio" class="fw-semibold text-decoration-none">
+                                    /portfolio
+                                </a>
+                            </td>
+                            <td class="original-url text-truncate">
+                                https://example.com/my-portfolio
+                            </td>
+                            <td>205</td>
+                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
+                            <td>Oct 12, 2026</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <a href="/youtube" class="fw-semibold text-decoration-none">
+                                    /youtube
+                                </a>
+                            </td>
+                            <td class="original-url text-truncate">
+                                https://example.com/youtube-channel
+                            </td>
+                            <td>187</td>
+                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
+                            <td>Oct 10, 2026</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <a href="/old-campaign" class="fw-semibold text-decoration-none">
+                                    /old-campaign
+                                </a>
+                            </td>
+                            <td class="original-url text-truncate">
+                                https://example.com/old-campaign
+                            </td>
+                            <td>148</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary">Inactive</span></td>
+                            <td>Oct 08, 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/links" class="btn btn-outline-primary btn-sm px-4">
+                    View All Links
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>

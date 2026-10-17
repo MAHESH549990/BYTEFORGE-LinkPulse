@@ -1,0 +1,242 @@
+<%- layout("boilerplate/boiler") %>
+
+<div class="register-page">
+    <div class="register-card">
+
+        <!-- Heading -->
+        <div class="text-center mb-4">
+            <div class="brand-icon">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <h2 class="fw-bold mt-3 mb-1">Create Account</h2>
+            <p class="text-secondary mb-0">
+                Join LinkPulse and start tracking your links
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <form action="/user/register" method="POST">
+
+            <div class="mb-3">
+                <label for="name" class="form-label fw-semibold">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label fw-semibold">
+                    Password
+                </label>
+
+                <div class="input-group">
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="togglePassword"
+                        aria-label="Show password"
+                    >
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+
+                <small class="text-secondary">
+                    Use at least 8 characters.
+                </small>
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label fw-semibold">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+                <small id="passwordMessage" class="d-none"></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 register-btn mt-2">
+                Create Account
+                <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+
+        </form>
+
+        <!-- Login Link -->
+        <div class="text-center mt-4">
+            <p class="text-secondary mb-0">
+                Already have an account?
+                <a href="/login" class="login-link fw-semibold">
+                    Login
+                </a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .register-page {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+        background: #f8fafc;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 460px;
+        padding: 35px;
+        background: #fff;
+        border: 1px solid #e8edf4;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .brand-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #5268e8;
+        color: #fff;
+        border-radius: 15px;
+        font-size: 25px;
+    }
+
+    .register-card .form-control,
+    .register-card .input-group .btn {
+        min-height: 46px;
+        border-color: #dbe2ea;
+    }
+
+    .register-card .form-control:focus {
+        border-color: #5268e8;
+        box-shadow: 0 0 0 0.2rem rgba(82, 104, 232, 0.12);
+    }
+
+    .register-btn {
+        min-height: 46px;
+        background: #5268e8;
+        border-color: #5268e8;
+        font-weight: 600;
+    }
+
+    .register-btn:hover {
+        background: #4055d0;
+        border-color: #4055d0;
+    }
+
+    .login-link {
+        color: #5268e8;
+        text-decoration: none;
+    }
+
+    .login-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    @media (max-width: 480px) {
+        .register-card {
+            padding: 25px 20px;
+        }
+    }
+</style>
+
+<script>
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const passwordMessage = document.getElementById("passwordMessage");
+
+    togglePassword.addEventListener("click", function () {
+        const isPassword = passwordInput.type === "password";
+
+        passwordInput.type = isPassword ? "text" : "password";
+
+        this.innerHTML = isPassword
+            ? '<i class="fa-regular fa-eye-slash"></i>'
+            : '<i class="fa-regular fa-eye"></i>';
+
+        this.setAttribute(
+            "aria-label",
+            isPassword ? "Hide password" : "Show password"
+        );
+    });
+
+    function checkPasswords() {
+        if (!confirmPassword.value) {
+            passwordMessage.className = "d-none";
+            confirmPassword.setCustomValidity("");
+            return;
+        }
+
+        const matches = passwordInput.value === confirmPassword.value;
+
+        passwordMessage.textContent = matches
+            ? "Passwords match."
+            : "Passwords do not match.";
+
+        passwordMessage.className = matches
+            ? "text-success small"
+            : "text-danger small";
+
+        confirmPassword.setCustomValidity(
+            matches ? "" : "Passwords do not match."
+        );
+    }
+
+    passwordInput.addEventListener("input", checkPasswords);
+    confirmPassword.addEventListener("input", checkPasswords);
+</script>
