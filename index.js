@@ -2,7 +2,15 @@ const express=require("express");
 const app=express();
 const port=8080;
 const path=require("path");
+
 const ejs_mate=require("ejs-mate");
+const flash=require("connect-flash");
+const session=require("express-session");
+const ExpressError=require("./utils/ExpressError.js");
+// require("dotenv").config();
+const passport=require("passport");
+const LocalStrategy=require("passport-local");
+
 const user=require("./backend/dashboard.js");
 const init=require("./models/init.js");
 const User=require("./models/user.js");
@@ -15,13 +23,61 @@ app.set("views",path.join(__dirname,"/views"));
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
+
 //public
 app.use(express.static(path.join(__dirname,"public")));
+
+const sessionOptioins={
+    secret:"mysupersecretstring",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires:Date.now()+3*60*60*1000,
+        maxAge:3*60*60*1000,
+        httpOnly:true
+    }
+}
+
+//flash
+app.use(session(sessionOptioins));
+app.use(flash());
+
+//use passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//currUser details
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    res.locals.currUser=req.user;
+    next();
+});
+
 
 //user
 app.use("/user",user);
 
 app.listen(port,()=>{
   console.log("Server is running..");
+});
+
+
+//middleware
+app.use((req,res,next)=>{
+  next(new ExpressError(404,"Page not found"));
+});
+
+app.use((err, req, res, next) => {
+    const { status = 500, message = "Some error occurred" } = err;
+
+    console.log("Error middleware reached:", message);
+
+    res.status(status).render("routes/flash.ejs", { message });
 });
 
