@@ -167,53 +167,54 @@ router.get("/links", isAdmin, asyncWrap(async (req, res) => {
 
 
 router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
-    // Fetch campaigns created by normal users
+    console.log("✅ Admin campaigns route opened");
+
     const campaignsData = await Campaign.find()
         .populate("createdBy", "username email role")
         .populate("links", "clicks createdAt")
         .sort({ createdAt: -1 })
         .lean();
 
+    console.log("📦 Campaigns found:", campaignsData.length);
+
     const campaigns = campaignsData
-        .filter(campaign => {
-            return campaign.createdBy &&
-                   campaign.createdBy.role !== "admin";
-        })
+        .filter(campaign =>
+            campaign.createdBy &&
+            campaign.createdBy.role !== "admin"
+        )
         .map(campaign => {
             const owner = campaign.createdBy;
             const links = campaign.links || [];
-
-            const linkDates = links
+            const dates = links
                 .map(link => link.createdAt)
                 .filter(Boolean)
-                .map(date => new Date(date));
-
-            const firstCreated = linkDates.length
-                ? new Date(Math.min(...linkDates))
-                : null;
-
-            const latestCreated = linkDates.length
-                ? new Date(Math.max(...linkDates))
-                : campaign.createdAt || null;
+                .map(date => new Date(date).getTime());
 
             return {
                 name: campaign.name,
-                username: owner?.username || "Unknown user",
-                email: owner?.email || "",
+                username: owner.username || "Unknown user",
+                email: owner.email || "",
                 totalLinks: links.length,
                 totalClicks: links.reduce(
                     (total, link) => total + (Number(link.clicks) || 0),
                     0
                 ),
-                firstCreated,
-                latestCreated
+                firstCreated: dates.length
+                    ? new Date(Math.min(...dates))
+                    : null,
+                latestCreated: dates.length
+                    ? new Date(Math.max(...dates))
+                    : campaign.createdAt || null
             };
         });
+
+    console.log("📊 Campaigns to render:", campaigns.length);
 
     res.render("routes/admin/routes/campaigns.ejs", {
         campaigns
     });
 }));
+
 // Admin profile
 router.get("/profile", isAdmin, asyncWrap(async (req, res) => {
     const admin = await User.findById(req.user._id)
