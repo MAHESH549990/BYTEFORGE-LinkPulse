@@ -76,6 +76,10 @@ app.use((req,res,next)=>{
 });
 
 
+app.get("/", (req, res) => {
+    return res.redirect(302, "/user/login");
+});
+
 //user
 app.use("/user",userOperations);
 app.use("/user",user);
