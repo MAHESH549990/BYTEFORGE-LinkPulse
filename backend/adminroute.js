@@ -109,7 +109,6 @@ router.get("/dashboard",isAdmin,asyncWrap(async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Admin dashboard error:", err);
         res.status(500).send("Unable to load admin dashboard");
     }
 }));

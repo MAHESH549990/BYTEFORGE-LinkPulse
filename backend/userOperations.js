@@ -9,12 +9,6 @@ const Campaign = require("../models/Campaign");
 const Visit = require("../models/Visit.js");
 const VisitModule = require("../models/Visit.js");
 
-console.log("Visit module path:", require.resolve("../models/Visit.js"));
-console.log("Visit module contents:", VisitModule);
-
-console.log("Visit model:", typeof Visit);
-console.log("Visit.find:", typeof Visit.find);
-console.log("Visit.create:", typeof Visit.create);
 
 router.get("/new/url",isAuthenticate,(req,res)=>{
   res.render("routes/newUrl.ejs");

@@ -1,6 +1,9 @@
+const dns = require("node:dns");
+dns.setServers(["8.8.8.8"]);
+
 const path = require("path");
 require("dotenv").config({
-  path: path.resolve(__dirname, "../.env")
+    path: path.resolve(__dirname, "../.env")
 });
 
 const mongoose = require("mongoose");
@@ -8,7 +11,7 @@ const User = require("../models/user.js");
 
 async function createAdmin() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.ATLAS_URI);
 
     const username = process.env.ADMIN_USERNAME;
     const email = process.env.ADMIN_EMAIL;

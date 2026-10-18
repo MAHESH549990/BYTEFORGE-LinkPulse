@@ -43,7 +43,6 @@ router.get("/dashboard", isAuthenticate, asyncWrap(async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Dashboard error:", err);
         req.flash("error", "Unable to load your dashboard.");
         res.redirect("/user/login");
     }
@@ -74,7 +73,7 @@ router.post("/register", asyncWrap(async (req, res, next) => {
         });
 
     } catch (err) {
-        console.error("Registration error:", err);
+    
         req.flash("error", err.message);
         return res.redirect("/user/register");
     }

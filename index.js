@@ -1,13 +1,16 @@
+
 const express=require("express");
 const app=express();
 const port=8080;
 const path=require("path");
+const mongoose=require("mongoose");
 
 const ejs_mate=require("ejs-mate");
 const flash=require("connect-flash");
 const session=require("express-session");
+require("dotenv").config();
+const MongoStore = require("connect-mongo").default;
 const ExpressError=require("./utils/ExpressError.js");
-// require("dotenv").config();
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 
@@ -15,8 +18,6 @@ const user=require("./backend/dashboard.js");
 const init=require("./models/init.js");
 const User=require("./models/user.js");
 const userOperations=require("./backend/userOperations.js");
-const Link=require("./models/link.js");
-const Campaign = require("./models/Campaign");
 const admin=require("./backend/adminroute.js");
 
 //views
@@ -32,7 +33,16 @@ app.use(express.json());
 //public
 app.use(express.static(path.join(__dirname,"public")));
 
+const store=MongoStore.create({
+  mongoUrl:process.env.ATLAS_URI,
+  crypto:{
+     secret:process.env.SECRET
+  },
+  touchAfter:24*3600,
+});
+
 const sessionOptioins={
+    store,
     secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
@@ -42,6 +52,7 @@ const sessionOptioins={
         httpOnly:true
     }
 }
+
 
 //flash
 app.use(session(sessionOptioins));
@@ -70,8 +81,10 @@ app.use("/user",userOperations);
 app.use("/user",user);
 app.use("/admin",admin);
 
-app.listen(port,()=>{
-  console.log("Server is running..");
+mongoose.connection.once("connected", () => {
+  app.listen(port, () => {
+    console.log("Server is running..");
+  });
 });
 
 
