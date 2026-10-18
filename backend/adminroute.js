@@ -164,55 +164,63 @@ router.get("/links", isAdmin, asyncWrap(async (req, res) => {
     });
 }));
 
-
-
 router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
     console.log("✅ Admin campaigns route opened");
+    console.log("🔌 MongoDB connection state:", mongoose.connection.readyState);
 
-    const campaignsData = await Campaign.find()
-        .populate("createdBy", "username email role")
-        .populate("links", "clicks createdAt")
-        .sort({ createdAt: -1 })
-        .lean();
+    try {
+        console.log("⏳ Starting Campaign.find()...");
 
-    console.log("📦 Campaigns found:", campaignsData.length);
+        const campaignsData = await Campaign.find()
+            .populate("createdBy", "username email role")
+            .populate("links", "clicks createdAt")
+            .sort({ createdAt: -1 })
+            .maxTimeMS(10000)
+            .lean();
 
-    const campaigns = campaignsData
-        .filter(campaign =>
-            campaign.createdBy &&
-            campaign.createdBy.role !== "admin"
-        )
-        .map(campaign => {
-            const owner = campaign.createdBy;
-            const links = campaign.links || [];
-            const dates = links
-                .map(link => link.createdAt)
-                .filter(Boolean)
-                .map(date => new Date(date).getTime());
+        console.log("📦 Campaigns found:", campaignsData.length);
 
-            return {
-                name: campaign.name,
-                username: owner.username || "Unknown user",
-                email: owner.email || "",
-                totalLinks: links.length,
-                totalClicks: links.reduce(
-                    (total, link) => total + (Number(link.clicks) || 0),
-                    0
-                ),
-                firstCreated: dates.length
-                    ? new Date(Math.min(...dates))
-                    : null,
-                latestCreated: dates.length
-                    ? new Date(Math.max(...dates))
-                    : campaign.createdAt || null
-            };
+        const campaigns = campaignsData
+            .filter(campaign =>
+                campaign.createdBy &&
+                campaign.createdBy.role !== "admin"
+            )
+            .map(campaign => {
+                const owner = campaign.createdBy;
+                const links = campaign.links || [];
+                const dates = links
+                    .map(link => link.createdAt)
+                    .filter(Boolean)
+                    .map(date => new Date(date).getTime());
+
+                return {
+                    name: campaign.name,
+                    username: owner.username || "Unknown user",
+                    email: owner.email || "",
+                    totalLinks: links.length,
+                    totalClicks: links.reduce(
+                        (total, link) => total + (Number(link.clicks) || 0),
+                        0
+                    ),
+                    firstCreated: dates.length
+                        ? new Date(Math.min(...dates))
+                        : null,
+                    latestCreated: dates.length
+                        ? new Date(Math.max(...dates))
+                        : campaign.createdAt || null
+                };
+            });
+
+        console.log("📊 Campaigns to render:", campaigns.length);
+        console.log("🖼️ Rendering campaigns EJS...");
+
+        return res.render("routes/admin/routes/campaigns.ejs", {
+            campaigns
         });
-
-    console.log("📊 Campaigns to render:", campaigns.length);
-
-    res.render("routes/admin/routes/campaigns.ejs", {
-        campaigns
-    });
+    } catch (error) {
+        console.error("❌ Campaigns route failed:", error);
+        return res.status(500).send("Failed to load campaigns. Check Render logs.");
+    }
 }));
 
 // Admin profile
