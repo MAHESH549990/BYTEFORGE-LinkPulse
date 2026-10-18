@@ -1,0 +1,272 @@
+
+<%- layout("boilerplate/boiler") %>
+
+<style>
+    .links-page {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 40px 16px 60px;
+    }
+
+    .links-header {
+        background: #111d35;
+        color: white;
+        border-radius: 18px;
+        padding: 32px;
+        margin-bottom: 28px;
+    }
+
+    .links-header p {
+        color: #c4cddd;
+    }
+
+    .link-card {
+        border: 1px solid #e6eaf0;
+        border-radius: 14px;
+        background: #fff;
+        padding: 22px;
+        height: 100%;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .link-card:hover {
+        border-color: #b8c9ef;
+        box-shadow: 0 8px 24px rgba(20, 40, 80, .06);
+    }
+
+    .link-original {
+        color: #697586;
+        font-size: .9rem;
+        overflow-wrap: anywhere;
+        margin-bottom: 16px;
+    }
+
+    .short-link {
+        display: inline-block;
+        color: #2458d3;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+        text-decoration: none;
+    }
+
+    .link-date {
+        font-size: .82rem;
+        color: #8590a0;
+    }
+
+    .link-actions .btn {
+        border-radius: 8px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        border: 1px dashed #d5dce6;
+        border-radius: 16px;
+        background: #fff;
+    }
+
+    .empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 18px;
+        display: grid;
+        place-items: center;
+        border-radius: 18px;
+        background: #edf3ff;
+        color: #2458d3;
+        font-size: 28px;
+    }
+</style>
+
+<div class="links-page">
+
+    <div class="links-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="small mb-2 text-uppercase fw-semibold"
+                     style="letter-spacing: 2px; color: #9db9ff;">
+                    LinkPulse / Your workspace
+                </div>
+
+                <h2 class="fw-bold mb-2">Your short links</h2>
+
+                <p class="mb-0">
+                    Manage, copy, and share all your shortened URLs in one place.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="mt-4 pt-3 border-top border-secondary">
+            <span class="small" style="color: #c4cddd;">
+                Total links
+            </span>
+            <div class="fs-3 fw-bold"><%= links.length %></div>
+        </div>
+    </div>
+
+    <% if (links.length === 0) { %>
+
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <h4 class="fw-bold">No links yet</h4>
+
+            <p class="text-secondary mb-4">
+                Create your first short link and share it anywhere.
+            </p>
+
+            <a href="/user/new/url" class="btn btn-primary px-4">
+                Create your first link
+            </a>
+        </div>
+
+    <% } else { %>
+
+        <div class="row g-4">
+            <% links.forEach((link) => { %>
+
+                <div class="col-12 col-lg-6">
+                    <div class="link-card">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div class="min-w-0">
+                                <div class="small text-secondary mb-2">
+                                    SHORT LINK
+                                </div>
+
+                                <a
+                                    class="short-link"
+                                    href="/user/s/<%= encodeURIComponent(link.shortUrl) %>"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
+                                    <%= link.shortUrl %>
+                                </a>
+                            </div>
+
+                            <span class="badge rounded-pill text-bg-light border">
+                                <i class="fa-solid fa-check me-1 text-success"></i>
+                                Active
+                            </span>
+                        </div>
+
+                        <div class="small text-secondary mb-1">
+                            ORIGINAL URL
+                        </div>
+
+                        <div class="link-original">
+                            <%= link.originalUrl %>
+                        </div>
+
+                        <div class="link-date mb-3">
+                            <i class="fa-regular fa-calendar me-1"></i>
+                            Created
+                            <%= new Date(link.createdAt).toLocaleDateString("en-IN", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric"
+                            }) %>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 link-actions">
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm px-3"
+                                onclick="copyLink(this)"
+                                data-link="<%= '/user/s/' + link.shortUrl %>"
+                            >
+                                <i class="fa-regular fa-copy me-1"></i>
+                                Copy link
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary btn-sm px-3"
+                                onclick="shareLink(this)"
+                                data-link="<%= '/user/s/' + link.shortUrl %>"
+                                data-title="<%= link.shortUrl %>"
+                            >
+                                <i class="fa-solid fa-share-nodes me-1"></i>
+                                Share
+                            </button>
+
+                            <a
+                                href="/user/s/<%= encodeURIComponent(link.shortUrl) %>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-outline-secondary btn-sm px-3"
+                            >
+                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
+                                Open
+                            </a>
+                            <a
+                            href="/user/links/<%= link._id %>/analytics"
+                            class="btn btn-success btn-sm px-3"
+                             >
+                            <i class="fa-solid fa-chart-line me-1"></i>
+                            View Visitors
+                           </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            <% }); %>
+        </div>
+
+    <% } %>
+</div>
+
+<script>
+    function getFullShortUrl(button) {
+        return window.location.origin + button.dataset.link;
+    }
+
+    async function copyLink(button) {
+        const url = getFullShortUrl(button);
+
+        try {
+            await navigator.clipboard.writeText(url);
+            button.innerHTML =
+                '<i class="fa-solid fa-check me-1"></i>Copied!';
+
+            setTimeout(() => {
+                button.innerHTML =
+                    '<i class="fa-regular fa-copy me-1"></i>Copy link';
+            }, 1800);
+        } catch (err) {
+            window.prompt("Copy your short link:", url);
+        }
+    }
+
+    async function shareLink(button) {
+        const url = getFullShortUrl(button);
+        const title = button.dataset.title;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "LinkPulse - " + title,
+                    text: "Check out this link:",
+                    url: url
+                });
+            } catch (err) {
+                if (err.name !== "AbortError") {
+                    console.error("Sharing failed:", err);
+                }
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                alert("Sharing isn't supported here. Short link copied!");
+            } catch (err) {
+                window.prompt("Copy your short link:", url);
+            }
+        }
+    }
+</script>

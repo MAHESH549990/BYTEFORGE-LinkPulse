@@ -1,205 +1,361 @@
- 
+
 <%- layout("boilerplate/boiler") %>
 
+<style>
+    .dashboard-page {
+        min-height: 80vh;
+        background: #f6f8fc;
+    }
+
+    .dashboard-content {
+        max-width: 1500px;
+        margin: auto;
+    }
+
+    .dashboard-heading {
+        color: #17233d;
+    }
+
+    .stat-card {
+        border: 1px solid #e8edf5 !important;
+        border-radius: 14px;
+        transition: transform .2s, box-shadow .2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(25, 45, 80, .07) !important;
+    }
+
+    .stat-icon-box {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: #edf3ff;
+        color: #315edb;
+        font-size: 18px;
+    }
+
+    .stat-number {
+        color: #17233d;
+        font-size: 30px;
+        font-weight: 750;
+    }
+
+    .dashboard-panel {
+        border: 1px solid #e8edf5;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .dashboard-panel .card-body {
+        padding: 24px;
+    }
+
+    .recent-table th {
+        color: #647084;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        white-space: nowrap;
+    }
+
+    .recent-table td {
+        padding-top: 17px;
+        padding-bottom: 17px;
+    }
+
+    .short-link-text {
+        color: #315edb;
+        font-weight: 600;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+    }
+
+    .original-url {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #647084;
+    }
+
+    .quick-action {
+        border: 1px solid #e4eaf3;
+        border-radius: 10px;
+        padding: 15px 18px;
+        color: #263653;
+        background: white;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+    .quick-action:hover {
+        background: #f4f7ff;
+        border-color: #b9cafa;
+        color: #315edb;
+    }
+
+    .empty-dashboard {
+        padding: 38px 15px;
+        text-align: center;
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-content {
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+        }
+
+        .dashboard-panel .card-body {
+            padding: 17px;
+        }
+
+        .original-url {
+            max-width: 160px;
+        }
+    }
+</style>
+
 <div class="dashboard-page">
-    <div class="container-fluid py-4 px-4">
-    <!-- Dashboard Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">Dashboard</h2>
-            <p class="text-secondary mb-0">Welcome back! Here's your link performance.</p>
+    <div class="dashboard-content container-fluid py-4 px-4">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between
+                    align-items-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold dashboard-heading mb-1">
+                    Dashboard
+                </h2>
+                <p class="text-secondary mb-0">
+                    Welcome back, <%= user ? user.username : "User" %>.
+                    Here's an overview of your links.
+                </p>
+            </div>
+
+            <a href="/user/new/url" class="btn btn-primary px-4 py-2">
+                <i class="fa-solid fa-plus me-2"></i>
+                Create Short Link
+            </a>
         </div>
 
-        <a href="/links/new" class="btn btn-primary px-4">
-            <i class="fa-solid fa-plus me-2"></i>Create Short Link
-        </a>
-    </div>
+        <!-- Statistics -->
+        <div class="row g-3 mb-4">
 
-    <!-- Statistics Cards -->
-    <div class="row g-4 mb-4">
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card stat-card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between
+                                    align-items-center mb-3">
+                            <span class="text-secondary">Total Links</span>
+                            <div class="stat-icon-box">
+                                <i class="fa-solid fa-link"></i>
+                            </div>
+                        </div>
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-secondary">Total Links</span>
-                        <i class="fa-solid fa-link stat-icon"></i>
+                        <div class="stat-number">
+                            <%= totalLinks %>
+                        </div>
+                        <small class="text-secondary">
+                            Links you've created
+                        </small>
                     </div>
-                    <h3 class="fw-bold mb-1">24</h3>
-                    <small class="text-secondary">Links you have created</small>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card stat-card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between
+                                    align-items-center mb-3">
+                            <span class="text-secondary">Total Clicks</span>
+                            <div class="stat-icon-box">
+                                <i class="fa-solid fa-arrow-pointer"></i>
+                            </div>
+                        </div>
+
+                        <div class="stat-number">
+                            <%= totalClicks %>
+                        </div>
+                        <small class="text-secondary">
+                            Total visits across your short links
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card stat-card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between
+                                    align-items-center mb-3">
+                            <span class="text-secondary">Active Links</span>
+                            <div class="stat-icon-box">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                        </div>
+
+                        <div class="stat-number">
+                            <%= activeLinks %>
+                        </div>
+                        <small class="text-secondary">
+                            Saved links available
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card stat-card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between
+                                    align-items-center mb-3">
+                            <span class="text-secondary">Campaigns</span>
+                            <div class="stat-icon-box">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                        </div>
+
+                        <div class="stat-number">
+                            <%= totalCampaigns %>
+                        </div>
+                        <small class="text-secondary">
+                            Campaign feature coming soon
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card dashboard-panel shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Quick Actions</h5>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/user/new/url" class="quick-action">
+                        <i class="fa-solid fa-link me-2"></i>
+                        Shorten URL
+                    </a>
+
+                    <a href="/user/links" class="quick-action">
+                        <i class="fa-solid fa-list me-2"></i>
+                        My Links
+                    </a>
+
+                    <a href="/user/profile" class="quick-action">
+                        <i class="fa-regular fa-user me-2"></i>
+                        My Profile
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-secondary">Total Clicks</span>
-                        <i class="fa-solid fa-arrow-pointer stat-icon"></i>
-                    </div>
-                    <h3 class="fw-bold mb-1">1,284</h3>
-                    <small class="text-secondary">Clicks across your links</small>
-                </div>
-            </div>
-        </div>
+        <!-- Recent Links -->
+        <div class="card dashboard-panel shadow-sm">
+            <div class="card-body">
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-secondary">Active Links</span>
-                        <i class="fa-solid fa-circle-check stat-icon"></i>
+                <div class="d-flex flex-wrap justify-content-between
+                            align-items-center gap-2 mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">Recent Links</h5>
+                        <p class="text-secondary small mb-0">
+                            Your five most recently created links
+                        </p>
                     </div>
-                    <h3 class="fw-bold mb-1">18</h3>
-                    <small class="text-secondary">Links currently active</small>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-secondary">Campaigns</span>
-                        <i class="fa-solid fa-bullhorn stat-icon"></i>
-                    </div>
-                    <h3 class="fw-bold mb-1">6</h3>
-                    <small class="text-secondary">Your tracked campaigns</small>
+                    <a href="/user/links"
+                       class="text-decoration-none fw-semibold">
+                        View All <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
+
+                <% if (links.length === 0) { %>
+
+                    <div class="empty-dashboard">
+                        <i class="fa-solid fa-link fs-1 text-secondary mb-3"></i>
+                        <h5 class="fw-bold">No links created yet</h5>
+                        <p class="text-secondary">
+                            Create your first short link to see it here.
+                        </p>
+                        <a href="/user/new-url" class="btn btn-primary px-4">
+                            Create Your First Link
+                        </a>
+                    </div>
+
+                <% } else { %>
+
+                    <div class="table-responsive">
+                        <table class="table recent-table table-hover
+                                      align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Short Link</th>
+                                    <th>Original URL</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% links.forEach((link) => { %>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                class="short-link-text"
+                                                href="/user/s/<%= encodeURIComponent(link.shortUrl) %>"
+                                                target="_blank"
+                                                rel="noopener noreferrer">
+                                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
+                                                <%= link.shortUrl %>
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            <div class="original-url"
+                                                 title="<%= link.originalUrl %>">
+                                                <%= link.originalUrl %>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge rounded-pill
+                                                         bg-success-subtle
+                                                         text-success border
+                                                         border-success-subtle">
+                                                <i class="fa-solid fa-check me-1"></i>
+                                                Saved
+                                            </span>
+                                        </td>
+
+                                        <td class="text-secondary small">
+                                            <%= new Date(link.createdAt)
+                                                .toLocaleDateString("en-IN", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                }) %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="/user/links"
+                           class="btn btn-outline-primary btn-sm px-4">
+                            View All Links
+                        </a>
+                    </div>
+
+                <% } %>
+
             </div>
         </div>
 
     </div>
-
-    <!-- Quick Actions -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">Quick Actions</h5>
-
-            <div class="d-flex flex-wrap gap-2">
-                <a href="/links/new" class="btn btn-primary">
-                    <i class="fa-solid fa-link me-2"></i>Shorten URL
-                </a>
-
-                <a href="/analytics" class="btn btn-outline-primary">
-                    <i class="fa-solid fa-chart-line me-2"></i>View Analytics
-                </a>
-
-                <a href="/campaigns" class="btn btn-outline-secondary">
-                    <i class="fa-solid fa-bullhorn me-2"></i>Manage Campaigns
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Links -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-                <div>
-                    <h5 class="fw-bold mb-1">Recent Links</h5>
-                    <p class="text-secondary small mb-0">Your recently created short URLs</p>
-                </div>
-
-                <a href="/links" class="text-decoration-none">View All</a>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table align-middle table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Short Link</th>
-                            <th>Original URL</th>
-                            <th>Clicks</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            <td>
-                                <a href="/summer-sale" class="fw-semibold text-decoration-none">
-                                    /summer-sale
-                                </a>
-                            </td>
-                            <td class="original-url text-truncate">
-                                https://example.com/products/summer
-                            </td>
-                            <td>428</td>
-                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
-                            <td>Oct 15, 2026</td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <a href="/instagram" class="fw-semibold text-decoration-none">
-                                    /instagram
-                                </a>
-                            </td>
-                            <td class="original-url text-truncate">
-                                https://example.com/instagram-campaign
-                            </td>
-                            <td>316</td>
-                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
-                            <td>Oct 14, 2026</td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <a href="/portfolio" class="fw-semibold text-decoration-none">
-                                    /portfolio
-                                </a>
-                            </td>
-                            <td class="original-url text-truncate">
-                                https://example.com/my-portfolio
-                            </td>
-                            <td>205</td>
-                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
-                            <td>Oct 12, 2026</td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <a href="/youtube" class="fw-semibold text-decoration-none">
-                                    /youtube
-                                </a>
-                            </td>
-                            <td class="original-url text-truncate">
-                                https://example.com/youtube-channel
-                            </td>
-                            <td>187</td>
-                            <td><span class="badge bg-success-subtle text-success">Active</span></td>
-                            <td>Oct 10, 2026</td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <a href="/old-campaign" class="fw-semibold text-decoration-none">
-                                    /old-campaign
-                                </a>
-                            </td>
-                            <td class="original-url text-truncate">
-                                https://example.com/old-campaign
-                            </td>
-                            <td>148</td>
-                            <td><span class="badge bg-secondary-subtle text-secondary">Inactive</span></td>
-                            <td>Oct 08, 2026</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="text-center mt-4">
-                <a href="/links" class="btn btn-outline-primary btn-sm px-4">
-                    View All Links
-                </a>
-            </div>
-
-        </div>
-    </div>
-</div>
-
 </div>
