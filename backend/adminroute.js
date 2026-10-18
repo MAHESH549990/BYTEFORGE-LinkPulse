@@ -1,11 +1,16 @@
 const express=require("express");
 const { Router } = require("express");
+const mongoose = require("mongoose");
+
 const router=express.Router({mergeParams:true});
 const User = require("../models/user.js");
 const Link = require("../models/link.js");
 const Visit = require("../models/Visit.js");
+const Campaign = require("../models/Campaign.js");
+
 const asyncWrap=require("../utils/asyncWrap.js");
 const { isAdmin } = require("../middleware/adminMiddleware.js");
+
 
 // Replace isAdmin with your existing admin authorization middleware.
 router.get("/dashboard",isAdmin,asyncWrap(async (req, res) => {
@@ -165,20 +170,13 @@ router.get("/links", isAdmin, asyncWrap(async (req, res) => {
 }));
 
 router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
-    console.log("✅ Admin campaigns route opened");
-    console.log("🔌 MongoDB connection state:", mongoose.connection.readyState);
-
     try {
-        console.log("⏳ Starting Campaign.find()...");
-
         const campaignsData = await Campaign.find()
             .populate("createdBy", "username email role")
             .populate("links", "clicks createdAt")
             .sort({ createdAt: -1 })
             .maxTimeMS(10000)
             .lean();
-
-        console.log("📦 Campaigns found:", campaignsData.length);
 
         const campaigns = campaignsData
             .filter(campaign =>
@@ -211,14 +209,11 @@ router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
                 };
             });
 
-        console.log("📊 Campaigns to render:", campaigns.length);
-        console.log("🖼️ Rendering campaigns EJS...");
 
         return res.render("routes/admin/routes/campaigns.ejs", {
             campaigns
         });
     } catch (error) {
-        console.error("❌ Campaigns route failed:", error);
         return res.status(500).send("Failed to load campaigns. Check Render logs.");
     }
 }));
