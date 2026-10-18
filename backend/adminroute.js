@@ -167,75 +167,53 @@ router.get("/links", isAdmin, asyncWrap(async (req, res) => {
 
 
 router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
-    const links = await Link.find()
-        .populate("createdBy", "username email")
-        .sort({ createdAt: 1 })
+    // Fetch campaigns created by normal users
+    const campaignsData = await Campaign.find()
+        .populate("createdBy", "username email role")
+        .populate("links", "clicks createdAt")
+        .sort({ createdAt: -1 })
         .lean();
 
-    const campaignMap = new Map();
+    const campaigns = campaignsData
+        .filter(campaign => {
+            return campaign.createdBy &&
+                   campaign.createdBy.role !== "admin";
+        })
+        .map(campaign => {
+            const owner = campaign.createdBy;
+            const links = campaign.links || [];
 
-    for (const link of links) {
-        let campaignName = link.campaignName;
+            const linkDates = links
+                .map(link => link.createdAt)
+                .filter(Boolean)
+                .map(date => new Date(date));
 
-        if (!campaignName && typeof link.campaign === "string") {
-            campaignName = link.campaign;
-        } else if (!campaignName && link.campaign?.name) {
-            campaignName = link.campaign.name;
-        }
+            const firstCreated = linkDates.length
+                ? new Date(Math.min(...linkDates))
+                : null;
 
-        if (!campaignName || !campaignName.trim()) continue;
+            const latestCreated = linkDates.length
+                ? new Date(Math.max(...linkDates))
+                : campaign.createdAt || null;
 
-        const owner = link.createdBy;
-        const ownerId = owner?._id?.toString() || "unknown";
-
-        // Exclude admin-owned campaigns if the populated user has a role.
-        if (owner?.role === "admin") continue;
-
-        const key = `${ownerId}:${campaignName.trim().toLowerCase()}`;
-
-        if (!campaignMap.has(key)) {
-            campaignMap.set(key, {
-                name: campaignName.trim(),
+            return {
+                name: campaign.name,
                 username: owner?.username || "Unknown user",
                 email: owner?.email || "",
-                totalLinks: 0,
-                totalClicks: 0,
-                firstCreated: link.createdAt || null,
-                latestCreated: link.createdAt || null
-            });
-        }
-
-        const campaign = campaignMap.get(key);
-
-        campaign.totalLinks++;
-        campaign.totalClicks += Number(link.clicks) || 0;
-
-        if (link.createdAt) {
-            if (
-                !campaign.firstCreated ||
-                new Date(link.createdAt) < new Date(campaign.firstCreated)
-            ) {
-                campaign.firstCreated = link.createdAt;
-            }
-
-            if (
-                !campaign.latestCreated ||
-                new Date(link.createdAt) > new Date(campaign.latestCreated)
-            ) {
-                campaign.latestCreated = link.createdAt;
-            }
-        }
-    }
-
-    const campaigns = [...campaignMap.values()].sort(
-        (a, b) => new Date(b.latestCreated || 0) - new Date(a.latestCreated || 0)
-    );
+                totalLinks: links.length,
+                totalClicks: links.reduce(
+                    (total, link) => total + (Number(link.clicks) || 0),
+                    0
+                ),
+                firstCreated,
+                latestCreated
+            };
+        });
 
     res.render("routes/admin/routes/campaigns.ejs", {
         campaigns
     });
 }));
-
 // Admin profile
 router.get("/profile", isAdmin, asyncWrap(async (req, res) => {
     const admin = await User.findById(req.user._id)
