@@ -14,7 +14,7 @@ router.get("/new/url",isAuthenticate,(req,res)=>{
   res.render("routes/newUrl.ejs");
 });
 
-router.post("/shorten/link", isAuthenticate,asyncWrap( async (req, res) => {
+router.post("/shorten/link",asyncWrap( async (req, res) => {
     try {
         const { originalUrl, customName } = req.body;
 
