@@ -1,0 +1,217 @@
+ <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top linkpulse-navbar">
+    <div class="container-fluid px-4">
+
+        <!-- Brand Logo -->
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2"
+           href="/admin/dashboard">
+
+            <span class="brand-icon">
+                <i class="fa-solid fa-link"></i>
+            </span>
+
+            <span class="brand-name">LinkPulse</span>
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminNavbar"
+            aria-controls="adminNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavbar">
+
+            <!-- Admin Navigation Links -->
+            <ul class="navbar-nav me-auto ms-lg-4 gap-lg-2">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/dashboard">
+                        <i class="fa-solid fa-gauge-high me-1"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">
+                        <i class="fa-solid fa-users me-1"></i>
+                        View Users
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/links">
+                        <i class="fa-solid fa-link me-1"></i>
+                        All Links
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/campaigns">
+                        <i class="fa-solid fa-bullhorn me-1"></i>
+                        Campaigns
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- Right Side Actions -->
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 py-3 py-lg-0">
+
+                <span class="admin-badge">
+                    <i class="fa-solid fa-shield-halved me-2"></i>
+                    Admin Panel
+                </span>
+
+                <!-- Account Dropdown -->
+                <div class="dropdown">
+
+                    <button
+                        class="btn btn-light border account-btn dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                        <i class="fa-solid fa-circle-user me-2"></i>
+
+                        <%= (typeof currentUser !== "undefined" && currentUser)
+                            ? (currentUser.name || currentUser.username || "Admin")
+                            : "Admin" %>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                        <li>
+                            <a class="dropdown-item" href="/admin/profile">
+                                <i class="fa-solid fa-circle-user me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="/user/dashboard">
+                                <i class="fa-solid fa-house me-2"></i>
+                                User Dashboard
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <form action="/user/logout" method="GET">
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i>
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .linkpulse-navbar {
+        min-height: 76px;
+        padding-top: 9px;
+        padding-bottom: 9px;
+        background: #ffffff;
+        border-bottom: 1px solid #e8edf4 !important;
+    }
+
+    .linkpulse-navbar .brand-icon {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: #5268e8;
+        color: #ffffff;
+        border-radius: 12px;
+        font-size: 19px;
+    }
+
+    .linkpulse-navbar .brand-name {
+        color: #1e293b;
+        font-size: 21px;
+        letter-spacing: -0.5px;
+    }
+
+    .linkpulse-navbar .nav-link {
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 10px 12px;
+        border-radius: 8px;
+        transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .linkpulse-navbar .nav-link:hover,
+    .linkpulse-navbar .nav-link:focus {
+        color: #5268e8;
+        background: #f1f4ff;
+    }
+
+    .linkpulse-navbar .admin-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        background: #f1f4ff;
+        color: #5268e8;
+        border: 1px solid #e0e7ff;
+        border-radius: 9px;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .linkpulse-navbar .account-btn {
+        min-height: 42px;
+        border-radius: 9px;
+        color: #334155;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .linkpulse-navbar .dropdown-menu {
+        border: 1px solid #e8edf4;
+        border-radius: 10px;
+        padding: 6px;
+    }
+
+    .linkpulse-navbar .dropdown-item {
+        padding: 9px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    @media (max-width: 991.98px) {
+        .linkpulse-navbar .navbar-collapse {
+            padding-top: 12px;
+        }
+
+        .linkpulse-navbar .nav-link {
+            padding: 10px 12px;
+        }
+
+        .linkpulse-navbar .admin-badge {
+            justify-content: flex-start;
+        }
+
+        .linkpulse-navbar .account-btn {
+            width: 100%;
+            text-align: left;
+        }
+    }
+</style>

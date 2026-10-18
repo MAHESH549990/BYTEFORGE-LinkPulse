@@ -1,0 +1,254 @@
+
+<%- layout("routes/admin/boiler/adminboiler") %>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Campaign Management</h2>
+            <p class="text-muted mb-0">View user campaigns and monitor their link performance.</p>
+        </div>
+
+        <span class="badge text-bg-dark px-3 py-2">
+            <i class="fa-solid fa-bullhorn me-2"></i>
+            <%= campaigns.length %> Campaigns
+        </span>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="campaign-icon bg-primary-subtle text-primary">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Total Campaigns</p>
+                        <h4 class="fw-bold mb-0"><%= campaigns.length %></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="campaign-icon bg-success-subtle text-success">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Campaign Links</p>
+                        <h4 class="fw-bold mb-0">
+                            <%= campaigns.reduce((sum, campaign) => sum + campaign.totalLinks, 0) %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="campaign-icon bg-warning-subtle text-warning">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Campaign Clicks</p>
+                        <h4 class="fw-bold mb-0">
+                            <%= campaigns.reduce((sum, campaign) => sum + campaign.totalClicks, 0).toLocaleString("en-IN") %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <label for="campaignSearch" class="form-label small fw-semibold">
+                Search campaigns
+            </label>
+
+            <div class="input-group">
+                <span class="input-group-text bg-white">
+                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                </span>
+                <input
+                    type="search"
+                    id="campaignSearch"
+                    class="form-control"
+                    placeholder="Search campaign, username or email..."
+                >
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Table -->
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-1">All User Campaigns</h5>
+            <p class="text-muted small mb-0">
+                Campaigns grouped by name and owner
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="campaignTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Campaign Name</th>
+                        <th>Created By</th>
+                        <th>Total Links</th>
+                        <th>Total Clicks</th>
+                        <th>First Link Created</th>
+                        <th>Latest Link Created</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (campaigns.length === 0) { %>
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="fa-solid fa-bullhorn fs-2 text-muted mb-3"></i>
+                                <h6 class="fw-bold">No campaigns found</h6>
+                                <p class="text-muted small mb-0">
+                                    Campaigns will appear here when users create links with campaign names.
+                                </p>
+                            </td>
+                        </tr>
+                    <% } else { %>
+
+                        <% campaigns.forEach((campaign, index) => { %>
+                            <tr class="campaign-row"
+                                data-search="<%= [campaign.name, campaign.username, campaign.email].join(' ').toLowerCase() %>">
+
+                                <td class="ps-3 text-muted"><%= index + 1 %></td>
+
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="campaign-icon bg-warning-subtle text-warning">
+                                            <i class="fa-solid fa-bullhorn"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold"><%= campaign.name %></div>
+                                            <div class="small text-muted">User campaign</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="fw-semibold">
+                                        <%= campaign.username || "Unknown user" %>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <%= campaign.email || "No email available" %>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-primary-subtle text-primary">
+                                        <%= campaign.totalLinks %>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="fw-bold">
+                                        <%= campaign.totalClicks.toLocaleString("en-IN") %>
+                                    </span>
+                                </td>
+
+                                <td class="small text-muted">
+                                    <%= campaign.firstCreated
+                                        ? new Date(campaign.firstCreated).toLocaleDateString("en-IN")
+                                        : "—" %>
+                                </td>
+
+                                <td class="small text-muted">
+                                    <%= campaign.latestCreated
+                                        ? new Date(campaign.latestCreated).toLocaleDateString("en-IN")
+                                        : "—" %>
+                                </td>
+
+                            </tr>
+                        <% }) %>
+
+                        <tr id="noCampaignResults" style="display:none;">
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                No campaigns match your search.
+                            </td>
+                        </tr>
+
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer bg-white py-3">
+            <p class="small text-muted mb-0">
+                <i class="fa-solid fa-circle-info me-1"></i>
+                Click totals are calculated from the recorded clicks on each campaign's links.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .campaign-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 18px;
+    }
+
+    #campaignTable th {
+        white-space: nowrap;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        color: #596273;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    #campaignTable td {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const search = document.getElementById("campaignSearch");
+        const rows = document.querySelectorAll(".campaign-row");
+        const noResults = document.getElementById("noCampaignResults");
+
+        if (!search) return;
+
+        search.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+            let visible = 0;
+
+            rows.forEach(row => {
+                const matches = (row.dataset.search || "").includes(query);
+                row.style.display = matches ? "" : "none";
+
+                if (matches) visible++;
+            });
+
+            if (noResults) {
+                noResults.style.display = visible === 0 ? "" : "none";
+            }
+        });
+    });
+</script>

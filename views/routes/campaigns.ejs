@@ -1,0 +1,346 @@
+
+<%- layout("boilerplate/boiler") %>
+
+<style>
+    .campaigns-page {
+        min-height: 80vh;
+        background: #f6f8fc;
+        padding: 36px 16px 60px;
+    }
+
+    .campaigns-content {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .campaign-hero {
+        background: #111d35;
+        color: white;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 26px;
+    }
+
+    .campaign-hero p {
+        color: #c4cddd;
+    }
+
+    .campaign-panel,
+    .campaign-card {
+        border: 1px solid #e6ebf3;
+        border-radius: 14px;
+        background: white;
+    }
+
+    .campaign-panel .card-body {
+        padding: 24px;
+    }
+
+    .campaign-card {
+        padding: 22px;
+        height: 100%;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .campaign-card:hover {
+        border-color: #bdcdf0;
+        box-shadow: 0 8px 24px rgba(25, 45, 80, .06);
+    }
+
+    .campaign-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #edf3ff;
+        color: #315edb;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+    }
+
+    .campaign-description {
+        color: #6b7688;
+        min-height: 42px;
+        overflow-wrap: anywhere;
+    }
+
+    .campaign-link-item {
+        background: #f7f9fc;
+        border: 1px solid #e7ebf2;
+        border-radius: 8px;
+        padding: 10px 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .campaign-link-item a {
+        color: #315edb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .campaign-empty {
+        text-align: center;
+        padding: 38px 16px;
+        border: 1px dashed #d3dbe7;
+        border-radius: 12px;
+        background: white;
+    }
+
+    @media (max-width: 576px) {
+        .campaign-hero {
+            padding: 23px;
+        }
+
+        .campaign-panel .card-body {
+            padding: 18px;
+        }
+    }
+</style>
+
+<div class="campaigns-page">
+    <div class="campaigns-content">
+
+        <!-- Header -->
+        <div class="campaign-hero">
+            <div class="d-flex flex-wrap justify-content-between
+                        align-items-center gap-3">
+                <div>
+                    <div class="small text-uppercase fw-semibold mb-2"
+                         style="color:#9db9ff; letter-spacing:1.5px;">
+                        LinkPulse / Workspace
+                    </div>
+
+                    <h2 class="fw-bold mb-2">Your campaigns</h2>
+
+                    <p class="mb-0">
+                        Organize your short links by project or promotion.
+                    </p>
+                </div>
+
+                <a href="#createCampaign"
+                   class="btn btn-light fw-semibold px-4 py-2">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    New Campaign
+                </a>
+            </div>
+
+            <div class="border-top border-secondary mt-4 pt-3">
+                <span class="small" style="color:#c4cddd;">
+                    Your campaigns
+                </span>
+                <div class="fs-3 fw-bold">
+                    <%= campaigns.length %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Campaign Form -->
+        <div class="card campaign-panel mb-4" id="createCampaign">
+            <div class="card-body">
+                <h5 class="fw-bold mb-1">Create a campaign</h5>
+                <p class="text-secondary small mb-4">
+                    Give your campaign a name and optionally attach your links.
+                </p>
+
+                <form action="/user/campaigns" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">
+                            Campaign name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control"
+                            maxlength="100"
+                            placeholder="e.g. Amazon Earbuds Promotion"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description"
+                               class="form-label fw-semibold">
+                            Description
+                            <span class="text-secondary fw-normal">
+                                (optional)
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            class="form-control"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="What is this campaign for?"
+                        ></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            Add existing short links
+                            <span class="text-secondary fw-normal">
+                                (optional)
+                            </span>
+                        </label>
+
+                        <% if (links.length === 0) { %>
+                            <div class="alert alert-light border mb-0">
+                                You haven't created any short links yet.
+                                <a href="/user/new-url">Create a link first.</a>
+                            </div>
+                        <% } else { %>
+
+                            <div class="d-grid gap-2">
+                                <% links.forEach((link) => { %>
+                                    <label class="campaign-link-item
+                                                  d-flex align-items-start
+                                                  gap-2">
+                                        <input
+                                            class="form-check-input mt-1"
+                                            type="checkbox"
+                                            name="links"
+                                            value="<%= link._id %>"
+                                        >
+
+                                        <span>
+                                            <span class="d-block fw-semibold">
+                                                <%= link.shortUrl %>
+                                            </span>
+
+                                            <small class="text-secondary">
+                                                <%= link.originalUrl %>
+                                            </small>
+                                        </span>
+                                    </label>
+                                <% }); %>
+                            </div>
+
+                        <% } %>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Create Campaign
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Campaign List -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold mb-1">Your campaigns</h5>
+                <p class="text-secondary small mb-0">
+                    Manage your saved campaign groups.
+                </p>
+            </div>
+        </div>
+
+        <% if (campaigns.length === 0) { %>
+
+            <div class="campaign-empty">
+                <div class="campaign-icon mx-auto mb-3">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+
+                <h5 class="fw-bold">No campaigns yet</h5>
+
+                <p class="text-secondary mb-0">
+                    Create your first campaign using the form above.
+                </p>
+            </div>
+
+        <% } else { %>
+
+            <div class="row g-3">
+                <% campaigns.forEach((campaign) => { %>
+
+                    <div class="col-12 col-md-6">
+                        <div class="campaign-card">
+
+                            <div class="d-flex justify-content-between
+                                        align-items-start gap-3 mb-3">
+                                <div class="campaign-icon">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </div>
+
+                                <span class="badge rounded-pill
+                                             text-bg-light border">
+                                    <%= campaign.links.length %>
+                                    <%= campaign.links.length === 1
+                                        ? "link" : "links" %>
+                                </span>
+                            </div>
+
+                            <h5 class="fw-bold mb-2">
+                                <%= campaign.name %>
+                            </h5>
+
+                            <p class="campaign-description mb-3">
+                                <%= campaign.description ||
+                                    "No description added." %>
+                            </p>
+
+                            <div class="small text-secondary mb-2">
+                                Created
+                                <%= new Date(campaign.createdAt)
+                                    .toLocaleDateString("en-IN", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric"
+                                    }) %>
+                            </div>
+
+                            <% if (campaign.links.length > 0) { %>
+                                <div class="border-top pt-3 mt-3">
+                                    <div class="small fw-semibold mb-2">
+                                        Campaign links
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <% campaign.links.forEach((link) => { %>
+                                            <div class="campaign-link-item">
+                                                <a
+                                                    href="/user/s/<%= encodeURIComponent(link.shortUrl) %>"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
+                                                    <%= link.shortUrl %>
+                                                </a>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            <% } else { %>
+                                <p class="small text-secondary border-top
+                                          pt-3 mt-3 mb-0">
+                                    No links attached to this campaign.
+                                </p>
+                            <% } %>
+
+                            <form
+                                action="/user/campaigns/<%= campaign._id %>/delete"
+                                method="POST"
+                                class="mt-4"
+                                onsubmit="return confirm('Delete this campaign? Its short links will not be deleted.');">
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm">
+                                    <i class="fa-regular fa-trash-can me-1"></i>
+                                    Delete Campaign
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                <% }); %>
+            </div>
+
+        <% } %>
+
+    </div>
+</div>

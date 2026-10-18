@@ -1,0 +1,473 @@
+
+<%- layout("routes/admin/boiler/adminboiler") %>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">All Links</h2>
+            <p class="text-muted mb-0">Monitor every shortened link created by your users.</p>
+        </div>
+
+        <span class="badge text-bg-dark px-3 py-2">
+            <i class="fa-solid fa-link me-2"></i>
+            <%= links.length %> Total Links
+        </span>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="summary-icon bg-primary-subtle text-primary">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Total Links</p>
+                        <h4 class="fw-bold mb-0"><%= links.length %></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="summary-icon bg-success-subtle text-success">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Total Clicks</p>
+                        <h4 class="fw-bold mb-0">
+                            <%= links.reduce((sum, link) => sum + (Number(link.clicks) || 0), 0).toLocaleString("en-IN") %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="summary-icon bg-info-subtle text-info">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Links With Clicks</p>
+                        <h4 class="fw-bold mb-0">
+                            <%= links.filter(link => (Number(link.clicks) || 0) > 0).length %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="summary-icon bg-warning-subtle text-warning">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-1">Campaign Links</p>
+                        <h4 class="fw-bold mb-0">
+                            <%= links.filter(link => link.campaignName || link.campaign).length %>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+
+                <div class="col-12 col-lg-6">
+                    <label for="linkSearch" class="form-label small fw-semibold">
+                        Search links
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                        </span>
+                        <input
+                            type="search"
+                            id="linkSearch"
+                            class="form-control"
+                            placeholder="Search URL, username, email or campaign..."
+                        >
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <label for="clickFilter" class="form-label small fw-semibold">
+                        Click activity
+                    </label>
+                    <select id="clickFilter" class="form-select">
+                        <option value="all">All links</option>
+                        <option value="clicked">With clicks</option>
+                        <option value="zero">No clicks yet</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <label for="sortLinks" class="form-label small fw-semibold">
+                        Sort by
+                    </label>
+                    <select id="sortLinks" class="form-select">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="clicks">Most clicks</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Links Table -->
+    <div class="card border-0 shadow-sm overflow-hidden">
+
+        <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h5 class="fw-bold mb-1">Link Directory</h5>
+                <p class="text-muted small mb-0">Link ownership and performance overview</p>
+            </div>
+
+            <span class="badge text-bg-light border" id="visibleCount">
+                <%= links.length %> links shown
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="linksTable">
+
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Created By</th>
+                        <th>Original URL</th>
+                        <th>Short Link</th>
+                        <th>Campaign</th>
+                        <th>Clicks</th>
+                        <th>Created On</th>
+                        <th>Activity</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (links.length === 0) { %>
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="fa-solid fa-link-slash fs-2 text-muted mb-3"></i>
+                                <h6 class="fw-bold">No links found</h6>
+                                <p class="text-muted small mb-0">
+                                    Links created by users will appear here.
+                                </p>
+                            </td>
+                        </tr>
+                    <% } else { %>
+
+                        <% links.forEach((link, index) => { %>
+                            <tr class="link-row"
+                                data-index="<%= index %>"
+                                data-clicks="<%= Number(link.clicks) || 0 %>"
+                                data-date="<%= link.createdAt ? new Date(link.createdAt).getTime() : 0 %>"
+                                data-search="<%= [
+                                    link.originalUrl,
+                                    link.shortUrl,
+                                    link.createdBy?.username,
+                                    link.createdBy?.email,
+                                    link.campaignName,
+                                    typeof link.campaign === 'object' ? link.campaign?.name : link.campaign
+                                ].filter(Boolean).join(' ').toLowerCase() %>">
+
+                                <td class="ps-3 text-muted row-number">
+                                    <%= index + 1 %>
+                                </td>
+
+                                <!-- User -->
+                                <td>
+                                    <div class="d-flex align-items-center gap-2"
+                                         style="min-width:155px;">
+                                        <div class="user-avatar">
+                                            <%= (link.createdBy?.username || link.createdBy?.email || "U").charAt(0).toUpperCase() %>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">
+                                                <%= link.createdBy?.username || "Unknown user" %>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <%= link.createdBy?.email || "No email available" %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Original URL -->
+                                <td style="min-width:210px;max-width:300px;">
+                                    <% if (link.originalUrl) { %>
+                                        <a href="<%= link.originalUrl %>"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="url-text text-decoration-none"
+                                           title="<%= link.originalUrl %>">
+                                            <%= link.originalUrl %>
+                                        </a>
+                                    <% } else { %>
+                                        <span class="text-muted">—</span>
+                                    <% } %>
+                                </td>
+
+                                <!-- Short Link -->
+                                <td style="min-width:145px;">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-semibold text-primary">
+                                            <%= link.shortUrl || "—" %>
+                                        </span>
+
+                                        <% if (link.shortUrl) { %>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-light border copy-link"
+                                                data-copy="<%= link.shortUrl %>"
+                                                title="Copy short link"
+                                                aria-label="Copy short link">
+                                                <i class="fa-regular fa-copy"></i>
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                </td>
+
+                                <!-- Campaign -->
+                                <td style="min-width:130px;">
+                                    <% const campaignName = typeof link.campaign === "object"
+                                        ? (link.campaign?.name || link.campaignName)
+                                        : (link.campaignName || link.campaign); %>
+
+                                    <% if (campaignName) { %>
+                                        <span class="badge rounded-pill text-bg-warning">
+                                            <i class="fa-solid fa-bullhorn me-1"></i>
+                                            <%= campaignName %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-muted small">No campaign</span>
+                                    <% } %>
+                                </td>
+
+                                <!-- Clicks -->
+                                <td>
+                                    <span class="fw-bold">
+                                        <%= (Number(link.clicks) || 0).toLocaleString("en-IN") %>
+                                    </span>
+                                </td>
+
+                                <!-- Creation Date -->
+                                <td style="min-width:120px;">
+                                    <div class="small fw-semibold">
+                                        <%= link.createdAt ? new Date(link.createdAt).toLocaleDateString("en-IN", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric"
+                                        }) : "—" %>
+                                    </div>
+                                    <div class="text-muted" style="font-size:11px;">
+                                        <%= link.createdAt ? new Date(link.createdAt).toLocaleTimeString("en-IN", {
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                        }) : "" %>
+                                    </div>
+                                </td>
+
+                                <!-- Activity -->
+                                <td>
+                                    <% if ((Number(link.clicks) || 0) > 0) { %>
+                                        <span class="badge rounded-pill bg-success-subtle text-success">
+                                            <i class="fa-solid fa-circle-check me-1"></i>
+                                            Active
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill bg-secondary-subtle text-secondary">
+                                            <i class="fa-regular fa-clock me-1"></i>
+                                            No clicks
+                                        </span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+
+                        <tr id="noResults" style="display:none;">
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                No links match your search or filter.
+                            </td>
+                        </tr>
+
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer bg-white py-3">
+            <div class="small text-muted">
+                <i class="fa-solid fa-shield-halved me-1"></i>
+                Admin overview of user-created links and their recorded click counts.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .summary-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8efff;
+        color: #2858b8;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .url-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+    }
+
+    #linksTable th {
+        white-space: nowrap;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        color: #596273;
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    #linksTable td {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .copy-link:hover {
+        color: #0d6efd;
+        background: #eef4ff;
+    }
+
+    .link-row[hidden] {
+        display: none !important;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("linkSearch");
+        const clickFilter = document.getElementById("clickFilter");
+        const sortSelect = document.getElementById("sortLinks");
+        const tableBody = document.querySelector("#linksTable tbody");
+        const visibleCount = document.getElementById("visibleCount");
+        const noResults = document.getElementById("noResults");
+
+        if (!tableBody || !searchInput) return;
+
+        const getRows = () =>
+            Array.from(tableBody.querySelectorAll(".link-row"));
+
+        function updateLinks() {
+            const query = searchInput.value.toLowerCase().trim();
+            const filter = clickFilter.value;
+            const sort = sortSelect.value;
+
+            const rows = getRows();
+
+            rows.sort((a, b) => {
+                if (sort === "oldest") {
+                    return Number(a.dataset.date) - Number(b.dataset.date);
+                }
+
+                if (sort === "clicks") {
+                    return Number(b.dataset.clicks) - Number(a.dataset.clicks);
+                }
+
+                return Number(b.dataset.date) - Number(a.dataset.date);
+            });
+
+            rows.forEach((row, index) => {
+                const matchesSearch =
+                    (row.dataset.search || "").includes(query);
+
+                const clicks = Number(row.dataset.clicks) || 0;
+
+                const matchesClicks =
+                    filter === "all" ||
+                    (filter === "clicked" && clicks > 0) ||
+                    (filter === "zero" && clicks === 0);
+
+                const visible = matchesSearch && matchesClicks;
+
+                row.hidden = !visible;
+                row.querySelector(".row-number").textContent = index + 1;
+
+                tableBody.appendChild(row);
+            });
+
+            const count = rows.filter(row => !row.hidden).length;
+
+            visibleCount.textContent =
+                count + (count === 1 ? " link shown" : " links shown");
+
+            if (noResults) {
+                noResults.style.display = count === 0 ? "" : "none";
+            }
+        }
+
+        searchInput.addEventListener("input", updateLinks);
+        clickFilter.addEventListener("change", updateLinks);
+        sortSelect.addEventListener("change", updateLinks);
+
+        document.querySelectorAll(".copy-link").forEach(button => {
+            button.addEventListener("click", async function () {
+                const text = this.dataset.copy;
+                const icon = this.querySelector("i");
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                    icon.className = "fa-solid fa-check text-success";
+                    this.title = "Copied!";
+                } catch (error) {
+                    window.prompt("Copy this short link:", text);
+                }
+
+                setTimeout(() => {
+                    icon.className = "fa-regular fa-copy";
+                    this.title = "Copy short link";
+                }, 1500);
+            });
+        });
+
+        updateLinks();
+    });
+</script>

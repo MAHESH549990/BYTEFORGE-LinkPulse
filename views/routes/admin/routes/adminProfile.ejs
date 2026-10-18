@@ -1,0 +1,188 @@
+
+<%- layout("routes/admin/boiler/adminboiler") %>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">My Profile</h2>
+        <p class="text-muted mb-0">View your LinkPulse administrator account details.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Profile Card -->
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+
+                    <div class="admin-avatar mx-auto mb-3">
+                        <%= (admin.username || admin.email || "A").charAt(0).toUpperCase() %>
+                    </div>
+
+                    <h4 class="fw-bold mb-1">
+                        <%= admin.username || "Administrator" %>
+                    </h4>
+
+                    <p class="text-muted mb-3">
+                        <%= admin.email || "No email available" %>
+                    </p>
+
+                    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+                        <i class="fa-solid fa-shield-halved me-1"></i>
+                        Administrator
+                    </span>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center text-start mb-3">
+                        <span class="text-muted small">Account Role</span>
+                        <span class="fw-semibold"><%= admin.role || "admin" %></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center text-start">
+                        <span class="text-muted small">Account Status</span>
+                        <span class="text-success fw-semibold">
+                            <i class="fa-solid fa-circle-check me-1"></i> Registered
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Details -->
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-user-gear me-2 text-primary"></i>
+                        Account Information
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <div class="row g-4">
+
+                        <div class="col-12 col-md-6">
+                            <label class="profile-label">Username</label>
+                            <div class="profile-value">
+                                <i class="fa-solid fa-user text-muted me-2"></i>
+                                <%= admin.username || "Not provided" %>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="profile-label">Email Address</label>
+                            <div class="profile-value">
+                                <i class="fa-solid fa-envelope text-muted me-2"></i>
+                                <span class="text-break">
+                                    <%= admin.email || "Not provided" %>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="profile-label">Account Role</label>
+                            <div class="profile-value">
+                                <i class="fa-solid fa-shield-halved text-muted me-2"></i>
+                                <%= admin.role || "admin" %>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="profile-label">Member Since</label>
+                            <div class="profile-value">
+                                <i class="fa-regular fa-calendar text-muted me-2"></i>
+                                <%= admin.createdAt
+                                    ? new Date(admin.createdAt).toLocaleDateString("en-IN", {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric"
+                                    })
+                                    : "Date not available" %>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="profile-label">Account ID</label>
+                            <div class="profile-value">
+                                <i class="fa-solid fa-fingerprint text-muted me-2"></i>
+                                <span class="text-break"><%= admin._id %></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Security Information -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="security-icon">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="fw-bold mb-1">Administrator Account Security</h6>
+                            <p class="text-muted small mb-0">
+                                Your administrator account has access to protected
+                                management pages. Keep your login credentials private
+                                and always log out when using a shared computer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-avatar {
+        width: 105px;
+        height: 105px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8efff;
+        color: #2858b8;
+        font-size: 42px;
+        font-weight: 700;
+        border: 4px solid #f4f7ff;
+    }
+
+    .profile-label {
+        display: block;
+        color: #737b89;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .profile-value {
+        display: flex;
+        align-items: flex-start;
+        gap: 2px;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .security-icon {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #e8efff;
+        color: #2858b8;
+        font-size: 18px;
+    }
+</style>

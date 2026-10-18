@@ -14,6 +14,11 @@ const LocalStrategy=require("passport-local");
 const user=require("./backend/dashboard.js");
 const init=require("./models/init.js");
 const User=require("./models/user.js");
+const userOperations=require("./backend/userOperations.js");
+const Link=require("./models/link.js");
+const Campaign = require("./models/Campaign");
+const admin=require("./backend/adminroute.js");
+
 //views
 app.engine("ejs",ejs_mate);
 app.set("view engine","ejs");
@@ -61,7 +66,9 @@ app.use((req,res,next)=>{
 
 
 //user
+app.use("/user",userOperations);
 app.use("/user",user);
+app.use("/admin",admin);
 
 app.listen(port,()=>{
   console.log("Server is running..");
@@ -73,11 +80,9 @@ app.use((req,res,next)=>{
   next(new ExpressError(404,"Page not found"));
 });
 
-app.use((err, req, res, next) => {
-    const { status = 500, message = "Some error occurred" } = err;
 
-    console.log("Error middleware reached:", message);
-
-    res.status(status).render("routes/flash.ejs", { message });
+app.use((err,req,res,next)=>{
+  let {status=500,message="Some error occured"}=err;
+  res.status(status).render("routes/flash.ejs",{message});
 });
 
