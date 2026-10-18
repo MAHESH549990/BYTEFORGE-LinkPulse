@@ -1,0 +1,586 @@
+
+<%- layout("routes/admin/boiler/adminboiler") %>
+<style>
+    .admin-dashboard {
+        background: #f6f8fc;
+        min-height: 85vh;
+    }
+
+    .admin-wrap {
+        max-width: 1450px;
+        margin: auto;
+    }
+
+    .admin-title {
+        color: #18243b;
+        font-weight: 750;
+    }
+
+    .admin-card {
+        border: 1px solid #e7edf5;
+        border-radius: 15px;
+        background: #fff;
+    }
+
+    .stat-label {
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .stat-value {
+        color: #18243b;
+        font-size: 30px;
+        font-weight: 750;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: #edf3ff;
+        color: #3563d9;
+        font-size: 19px;
+    }
+
+    .section-title {
+        color: #18243b;
+        font-weight: 700;
+        font-size: 17px;
+    }
+
+    .admin-table th {
+        color: #718096;
+        font-size: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .admin-table td {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .admin-link {
+        color: #3563d9;
+        overflow-wrap: anywhere;
+    }
+
+    .chart-box {
+        height: 300px;
+        position: relative;
+    }
+
+    @media (max-width: 576px) {
+        .stat-value {
+            font-size: 25px;
+        }
+
+        .chart-box {
+            height: 250px;
+        }
+    }
+</style>
+
+<div class="admin-dashboard py-4">
+    <div class="container-fluid px-3 px-md-4 admin-wrap">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between
+                    align-items-center gap-3 mb-4">
+
+            <div>
+                <h2 class="admin-title mb-1">
+                    <i class="fa-solid fa-gauge-high me-2"></i>
+                    Admin Dashboard
+                </h2>
+
+                <p class="text-secondary mb-0">
+                    Monitor your LinkPulse platform in one place.
+                </p>
+            </div>
+
+            <span class="badge rounded-pill bg-primary-subtle
+                         text-primary px-3 py-2">
+                <i class="fa-solid fa-shield-halved me-1"></i>
+                Administrator
+            </span>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="admin-card shadow-sm p-3 h-100">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="stat-label">Total Users</span>
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-value">
+                        <%= totalUsers.toLocaleString("en-IN") %>
+                    </div>
+
+                    <small class="text-secondary">
+                        Registered accounts
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="admin-card shadow-sm p-3 h-100">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="stat-label">Total Links</span>
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-value">
+                        <%= totalLinks.toLocaleString("en-IN") %>
+                    </div>
+
+                    <small class="text-secondary">
+                        Links created on the platform
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="admin-card shadow-sm p-3 h-100">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="stat-label">Total Clicks</span>
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-arrow-pointer"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-value">
+                        <%= totalClicks.toLocaleString("en-IN") %>
+                    </div>
+
+                    <small class="text-secondary">
+                        All-time link click counters
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="admin-card shadow-sm p-3 h-100">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="stat-label">Recorded Visits</span>
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-value">
+                        <%= totalVisits.toLocaleString("en-IN") %>
+                    </div>
+
+                    <small class="text-secondary">
+                        Individual visits saved in MongoDB
+                    </small>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Secondary Stats -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-12 col-md-6">
+                <div class="admin-card shadow-sm p-3
+                            d-flex align-items-center gap-3">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">
+                            Links With Clicks
+                        </div>
+
+                        <div class="fs-4 fw-bold">
+                            <%= activeLinks %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="admin-card shadow-sm p-3
+                            d-flex align-items-center gap-3">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">
+                            Analytics Period
+                        </div>
+
+                        <div class="fs-5 fw-bold">
+                            Last 7 Days
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Click Chart -->
+        <div class="admin-card shadow-sm p-3 p-md-4 mb-4">
+            <div class="mb-4">
+                <h5 class="section-title mb-1">
+                    Platform Visitor Activity
+                </h5>
+
+                <p class="text-secondary small mb-0">
+                    Daily recorded visits across all users.
+                </p>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="adminVisitsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Links -->
+        <div class="admin-card shadow-sm p-3 p-md-4 mb-4">
+            <div class="d-flex justify-content-between
+                        align-items-center gap-2 mb-3">
+
+                <h5 class="section-title mb-0">
+                    Recently Created Links
+                </h5>
+
+                <span class="badge bg-light text-secondary border">
+                    Latest 6
+                </span>
+            </div>
+
+            <% if (recentLinks.length === 0) { %>
+
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-link fs-2
+                              text-secondary mb-3"></i>
+
+                    <p class="text-secondary mb-0">
+                        No links have been created yet.
+                    </p>
+                </div>
+
+            <% } else { %>
+
+                <div class="table-responsive">
+                    <table class="table table-hover admin-table
+                                  align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Short Link</th>
+                                <th>Original URL</th>
+                                <th>Created By</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% recentLinks.forEach(link => { %>
+
+                                <tr>
+                                    <td>
+                                        <span class="admin-link fw-semibold">
+                                            <%= link.shortUrl %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div style="max-width: 260px;
+                                                    overflow-wrap: anywhere;">
+                                            <%= link.originalUrl %>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <% if (link.createdBy) { %>
+                                            <div class="fw-semibold">
+                                                <%= link.createdBy.username
+                                                    || link.createdBy.email
+                                                    || "User" %>
+                                            </div>
+
+                                            <% if (link.createdBy.username &&
+                                                  link.createdBy.email) { %>
+                                                <small class="text-secondary">
+                                                    <%= link.createdBy.email %>
+                                                </small>
+                                            <% } %>
+                                        <% } else { %>
+                                            <span class="text-secondary">
+                                                Unknown
+                                            </span>
+                                        <% } %>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary-subtle
+                                                     text-primary">
+                                            <%= link.clicks || 0 %>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            <% }); %>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            <% } %>
+        </div>
+
+        <!-- Top Links -->
+        <div class="admin-card shadow-sm p-3 p-md-4 mb-4">
+            <div class="mb-3">
+                <h5 class="section-title mb-1">
+                    Top Performing Links
+                </h5>
+
+                <p class="text-secondary small mb-0">
+                    Five links with the highest recorded click counters.
+                </p>
+            </div>
+
+            <% if (topLinks.length === 0) { %>
+
+                <p class="text-secondary text-center py-4 mb-0">
+                    No links are available yet.
+                </p>
+
+            <% } else { %>
+
+                <% topLinks.forEach((link, index) => { %>
+
+                    <div class="d-flex align-items-center gap-3 py-3
+                        <%= index !== topLinks.length - 1
+                            ? 'border-bottom' : '' %>">
+
+                        <div class="stat-icon flex-shrink-0">
+                            <%= index + 1 %>
+                        </div>
+
+                        <div class="flex-grow-1"
+                             style="min-width: 0;">
+
+                            <div class="fw-semibold admin-link">
+                                <%= link.shortUrl %>
+                            </div>
+
+                            <small class="text-secondary">
+                                Created by:
+                                <%= link.createdBy
+                                    ? (link.createdBy.username
+                                        || link.createdBy.email
+                                        || "User")
+                                    : "Unknown" %>
+                            </small>
+                        </div>
+
+                        <div class="text-end">
+                            <div class="fw-bold">
+                                <%= link.clicks || 0 %>
+                            </div>
+
+                            <small class="text-secondary">
+                                clicks
+                            </small>
+                        </div>
+                    </div>
+
+                <% }); %>
+
+            <% } %>
+        </div>
+
+        <!-- Recent Visitors -->
+        <div class="admin-card shadow-sm p-3 p-md-4 mb-4">
+            <div class="mb-3">
+                <h5 class="section-title mb-1">
+                    Recent Visitor Activity
+                </h5>
+
+                <p class="text-secondary small mb-0">
+                    Latest visits recorded across the platform.
+                </p>
+            </div>
+
+            <% if (recentVisits.length === 0) { %>
+
+                <div class="text-center py-4">
+                    <i class="fa-solid fa-users fs-2
+                              text-secondary mb-3"></i>
+
+                    <p class="text-secondary mb-0">
+                        No visits recorded yet.
+                    </p>
+                </div>
+
+            <% } else { %>
+
+                <div class="table-responsive">
+                    <table class="table table-hover admin-table
+                                  align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Visited At</th>
+                                <th>Short Link</th>
+                                <th>Browser</th>
+                                <th>Referrer</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% recentVisits.forEach(visit => {
+                                const ua = visit.userAgent || "";
+                                let browser = "Other";
+
+                                if (/Edg\//i.test(ua)) {
+                                    browser = "Edge";
+                                } else if (/OPR\//i.test(ua)) {
+                                    browser = "Opera";
+                                } else if (/Firefox\//i.test(ua)) {
+                                    browser = "Firefox";
+                                } else if (/Chrome\//i.test(ua)) {
+                                    browser = "Chrome";
+                                } else if (/Safari\//i.test(ua)) {
+                                    browser = "Safari";
+                                }
+                            %>
+
+                                <tr>
+                                    <td class="text-nowrap">
+                                        <%= new Date(visit.visitedAt)
+                                            .toLocaleString("en-IN", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric",
+                                                hour: "2-digit",
+                                                minute: "2-digit"
+                                            }) %>
+                                    </td>
+
+                                    <td class="admin-link">
+                                        <%= visit.link
+                                            ? visit.link.shortUrl
+                                            : "Link unavailable" %>
+                                    </td>
+
+                                    <td><%= browser %></td>
+
+                                    <td>
+                                        <div style="max-width: 220px;
+                                                    overflow-wrap: anywhere;">
+                                            <%= visit.referrer || "Direct" %>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            <% }); %>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            <% } %>
+        </div>
+
+        <p class="text-secondary small mb-0">
+            <i class="fa-solid fa-circle-info me-1"></i>
+            Visitor information is based on recorded click events.
+            Browser detection is an estimate.
+        </p>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- EJS data is kept in HTML attributes -->
+<div id="adminChartData"
+     data-labels='<%= JSON.stringify(dailyLabels) %>'
+     data-values='<%= JSON.stringify(dailyValues) %>'>
+</div>
+
+<script>
+    const chartElement = document.getElementById("adminChartData");
+
+    const labels = JSON.parse(chartElement.dataset.labels);
+    const values = JSON.parse(chartElement.dataset.values);
+
+    const readableLabels = labels.map(value => {
+        const [year, month, day] = value.split("-").map(Number);
+
+        return new Date(year, month - 1, day).toLocaleDateString(
+            "en-IN",
+            { day: "2-digit", month: "short" }
+        );
+    });
+
+    new Chart(document.getElementById("adminVisitsChart"), {
+        type: "line",
+
+        data: {
+            labels: readableLabels,
+
+            datasets: [{
+                label: "Recorded Visits",
+                data: values,
+                borderColor: "#3563d9",
+                backgroundColor: "rgba(53, 99, 217, 0.12)",
+                fill: true,
+                tension: 0.35,
+                borderWidth: 3,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            interaction: {
+                intersect: false,
+                mode: "index"
+            },
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                },
+
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+</script>
