@@ -195,7 +195,7 @@ router.get("/links", isAuthenticate, asyncWrap(async (req, res) => {
 }));
 // visitors details 
 
-router.get("/s/:shortUrl", isAuthenticate,asyncWrap(async (req, res) => {
+router.get("/s/:shortUrl",asyncWrap(async (req, res) => {
     try {
         const link = await Link.findOne({
             shortUrl: req.params.shortUrl.toLowerCase()
