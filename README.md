@@ -58,7 +58,7 @@ LinkPulse/
 5. Start the development server:
 
    ```bash
-   npm run dev
+   npm index.js
    ```
 
 ## Goal
