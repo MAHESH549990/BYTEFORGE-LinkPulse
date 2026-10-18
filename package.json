@@ -1,4 +1,7 @@
 {
+  "engines":{
+    "node":"v24.18.0"
+  },
   "dependencies": {
     "connect-flash": "^0.1.1",
     "dotenv": "^18.0.8",

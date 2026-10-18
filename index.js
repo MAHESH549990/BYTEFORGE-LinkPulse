@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")));
 
 const sessionOptioins={
-    secret:"mysupersecretstring",
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
