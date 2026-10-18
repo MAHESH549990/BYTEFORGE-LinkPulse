@@ -9,7 +9,6 @@ const Campaign = require("../models/Campaign");
 const Visit = require("../models/Visit.js");
 const VisitModule = require("../models/Visit.js");
 
-
 router.get("/new/url",isAuthenticate,(req,res)=>{
   res.render("routes/newUrl.ejs");
 });
