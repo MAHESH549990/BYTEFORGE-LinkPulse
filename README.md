@@ -228,6 +228,7 @@ LinkPulse was developed collaboratively by our team:
 - **Kartik Kumar**
 - **Mahesh Bhatt** — [GitHub](https://github.com/MAHESH549990)
 - **Neeraj Joshi** --[GitHub](https://github.com/svg185)
+- **Saurav Bhatt** --[GitHub](https://github.com/saurav-bhatt798)
 
 ### 🔗 Project Repository
 
