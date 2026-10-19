@@ -20,6 +20,9 @@ const User=require("./models/user.js");
 const userOperations=require("./backend/userOperations.js");
 const admin=require("./backend/adminroute.js");
 
+const methodOverride = require("method-override");
+app.use(methodOverride("_method"));
+
 //views
 app.engine("ejs",ejs_mate);
 app.set("view engine","ejs");

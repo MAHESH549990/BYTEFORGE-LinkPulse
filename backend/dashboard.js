@@ -112,6 +112,117 @@ router.get("/logout",isAuthenticate,(req,res,next)=>{
   })
 })
 
+
+// GET: Show the edit form
+router.get(
+    "/links/:id/edit",
+    isAuthenticate,
+    asyncWrap(async (req, res) => {
+        const link = await Link.findOne({
+            _id: req.params.id,
+            createdBy: req.user._id
+        });
+
+        if (!link) {
+            return res.status(404).send("Link not found or access denied.");
+        }
+
+        res.render("routes/editLink.ejs", { link });
+    })
+);
+
+
+// PUT: Update a link
+router.put(
+    "/links/:id",
+    isAuthenticate,
+    asyncWrap(async (req, res) => {
+        const { originalUrl, shortUrl } = req.body;
+
+        // Find only a link owned by the logged-in user
+        const link = await Link.findOne({
+            _id: req.params.id,
+            createdBy: req.user._id
+        });
+
+        if (!link) {
+            return res.status(404).send("Link not found or access denied.");
+        }
+
+        // Validate required fields
+        if (
+            typeof originalUrl !== "string" ||
+            typeof shortUrl !== "string" ||
+            !originalUrl.trim() ||
+            !shortUrl.trim()
+        ) {
+            return res.status(400).send("Both URL fields are required.");
+        }
+
+        const cleanedUrl = originalUrl.trim();
+        const cleanedShortUrl = shortUrl.trim().toLowerCase();
+
+        // Accept only valid HTTP/HTTPS destination URLs
+        let parsedUrl;
+
+        try {
+            parsedUrl = new URL(cleanedUrl);
+        } catch {
+            return res.status(400).send("Please enter a valid destination URL.");
+        }
+
+        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+            return res.status(400).send("Only HTTP and HTTPS URLs are allowed.");
+        }
+
+        // Match the shortUrl schema's allowed characters
+        if (!/^[a-z0-9_-]{3,50}$/.test(cleanedShortUrl)) {
+            return res.status(400).send(
+                "Short link must be 3–50 characters and contain only letters, numbers, hyphens, or underscores."
+            );
+        }
+
+        // Check whether another link already uses this code
+        const duplicate = await Link.findOne({
+            shortUrl: cleanedShortUrl,
+            _id: { $ne: link._id }
+        });
+
+        if (duplicate) {
+            return res.status(400).send(
+                "That short link code is already in use. Please choose another."
+            );
+        }
+
+        link.originalUrl = cleanedUrl;
+        link.shortUrl = cleanedShortUrl;
+
+        await link.save();
+
+        res.redirect("/user/links");
+    })
+);
+
+
+
+router.delete(
+    "/links/:id",
+    isAuthenticate,
+    asyncWrap(async (req, res) => {
+        const deletedLink = await Link.findOneAndDelete({
+            _id: req.params.id,
+            createdBy: req.user._id
+        });
+
+        if (!deletedLink) {
+            return res.status(404).send("Link not found or access denied.");
+        }
+
+        res.redirect("/user/links");
+    })
+);
+
+
 //privacy
 router.get("/privacy",(req,res)=>{
     res.render("routes/privacy.ejs");
