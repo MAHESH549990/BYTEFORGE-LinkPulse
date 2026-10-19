@@ -6,7 +6,6 @@ const router=express.Router({mergeParams:true});
 const User = require("../models/user.js");
 const Link = require("../models/link.js");
 const Visit = require("../models/Visit.js");
-const Campaign = require("../models/Campaign.js");
 
 const asyncWrap=require("../utils/asyncWrap.js");
 const { isAdmin } = require("../middleware/adminMiddleware.js");
