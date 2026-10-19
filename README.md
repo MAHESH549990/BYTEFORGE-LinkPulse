@@ -224,7 +224,7 @@ Potential enhancements for future versions include:
 
 LinkPulse was developed collaboratively by our team:
 
-- **Ashi Gupta**(Team Leader)(https://github.com/Ashi-engf)
+- **Ashi Gupta** --[GitHub](https://github.com/Ashi-engf) --(Team Leader)
 - **Kartik Kumar** --[GitHub](https://github.com/svg185)
 - **Mahesh Bhatt** — [GitHub](https://github.com/MAHESH549990)
 - **Neeraj Joshi** --[GitHub](https://github.com/yjoshhioo07-sys)
