@@ -74,7 +74,7 @@
                     <div>
                         <p class="text-muted small mb-1">Campaign Links</p>
                         <h4 class="fw-bold mb-0">
-                          <%= links.filter(link => link.campaignNames.length > 0).length %>
+                          <%= links.filter(link => (link.campaignNames || []).length > 0).length %>
                         </h4>
                     </div>
                 </div>
@@ -172,25 +172,23 @@
                                 </p>
                             </td>
                         </tr>
-                    <% } else { %>
+                    <% } else { %>   
+                    <% links.forEach((link, index) => { %>
+                        <tr class="link-row"
+                            data-index="<%= index %>"
+                            data-clicks="<%= Number(link.clicks) || 0 %>"
+                            data-date="<%= link.createdAt ? new Date(link.createdAt).getTime() : 0 %>"
+                            data-search="<%= [
+                                link.originalUrl,
+                                link.shortUrl,
+                                link.createdBy?.username,
+                                link.createdBy?.email,
+                                ...(link.campaignNames || [])
+                            ].filter(Boolean).join(' ').toLowerCase() %>">
 
-                        <% links.forEach((link, index) => { %>
-                            <tr class="link-row"
-                                data-index="<%= index %>"
-                                data-clicks="<%= Number(link.clicks) || 0 %>"
-                                data-date="<%= link.createdAt ? new Date(link.createdAt).getTime() : 0 %>"
-                                data-search=<%= [
-                                            link.originalUrl,
-                                            link.shortUrl,
-                                            link.createdBy?.username,
-                                            link.createdBy?.email,
-                                            ...(link.campaignNames || [])
-                                        ].filter(Boolean).join(' ').toLowerCase() %>
-
-                                <td class="ps-3 text-muted row-number">
-                                    <%= index + 1 %>
-                                </td>
-
+                            <td class="ps-3 text-muted row-number">
+                                <%= index + 1 %>
+                            </td>
                                 <!-- User -->
                                 <td>
                                     <div class="d-flex align-items-center gap-2"
