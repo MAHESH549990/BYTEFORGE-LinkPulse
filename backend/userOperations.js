@@ -1,13 +1,12 @@
 const express=require("express");
 const { Router } = require("express");
 const router=express.Router({mergeParams:true});
-const User=require("../models/user.js");
 const Link = require("../models/link.js");
 const asyncWrap=require("../utils/asyncWrap.js");
 const { isAuthenticate } = require("../middleware/userMiddleware.js");
 const Campaign = require("../models/Campaign");
 const Visit = require("../models/Visit.js");
-const VisitModule = require("../models/Visit.js");
+
 
 router.get("/new/url",isAuthenticate,(req,res)=>{
   res.render("routes/newUrl.ejs");

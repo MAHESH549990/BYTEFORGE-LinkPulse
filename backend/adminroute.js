@@ -1,6 +1,5 @@
 const express=require("express");
 const { Router } = require("express");
-const mongoose = require("mongoose");
 
 const router=express.Router({mergeParams:true});
 const User = require("../models/user.js");

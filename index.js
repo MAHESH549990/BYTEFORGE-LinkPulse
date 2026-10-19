@@ -15,7 +15,6 @@ const passport=require("passport");
 const LocalStrategy=require("passport-local");
 
 const user=require("./backend/dashboard.js");
-const init=require("./models/init.js");
 const User=require("./models/user.js");
 const userOperations=require("./backend/userOperations.js");
 const admin=require("./backend/adminroute.js");
