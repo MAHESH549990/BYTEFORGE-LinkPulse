@@ -9,7 +9,6 @@ const Campaign = require("../models/Campaign");
 const Visit = require("../models/Visit.js");
 const VisitModule = require("../models/Visit.js");
 
-
 router.get("/new/url",isAuthenticate,(req,res)=>{
   res.render("routes/newUrl.ejs");
 });
@@ -196,7 +195,7 @@ router.get("/links", isAuthenticate, asyncWrap(async (req, res) => {
 }));
 // visitors details 
 
-router.get("/s/:shortUrl", isAuthenticate,asyncWrap(async (req, res) => {
+router.get("/s/:shortUrl",asyncWrap(async (req, res) => {
     try {
         const link = await Link.findOne({
             shortUrl: req.params.shortUrl.toLowerCase()

@@ -1,12 +1,17 @@
 const express=require("express");
 const { Router } = require("express");
+const mongoose = require("mongoose");
+
 const router=express.Router({mergeParams:true});
 const User = require("../models/user.js");
 const Link = require("../models/link.js");
 const Visit = require("../models/Visit.js");
+const Campaign = require("../models/Campaign.js");
+
 const asyncWrap=require("../utils/asyncWrap.js");
 const { isAdmin } = require("../middleware/adminMiddleware.js");
 const Campaign = require("../models/Campaign.js");
+
 
 // Replace isAdmin with your existing admin authorization middleware.
 router.get("/dashboard",isAdmin,asyncWrap(async (req, res) => {
@@ -190,76 +195,53 @@ router.get("/links", isAdmin, asyncWrap(async (req, res) => {
     });
 }));
 
-
-
 router.get("/campaigns", isAdmin, asyncWrap(async (req, res) => {
-    const links = await Link.find()
-        .populate("createdBy", "username email")
-        .sort({ createdAt: 1 })
-        .lean();
+    try {
+        const campaignsData = await Campaign.find()
+            .populate("createdBy", "username email role")
+            .populate("links", "clicks createdAt")
+            .sort({ createdAt: -1 })
+            .maxTimeMS(10000)
+            .lean();
 
-    const campaignMap = new Map();
+        const campaigns = campaignsData
+            .filter(campaign =>
+                campaign.createdBy &&
+                campaign.createdBy.role !== "admin"
+            )
+            .map(campaign => {
+                const owner = campaign.createdBy;
+                const links = campaign.links || [];
+                const dates = links
+                    .map(link => link.createdAt)
+                    .filter(Boolean)
+                    .map(date => new Date(date).getTime());
 
-    for (const link of links) {
-        let campaignName = link.campaignName;
-
-        if (!campaignName && typeof link.campaign === "string") {
-            campaignName = link.campaign;
-        } else if (!campaignName && link.campaign?.name) {
-            campaignName = link.campaign.name;
-        }
-
-        if (!campaignName || !campaignName.trim()) continue;
-
-        const owner = link.createdBy;
-        const ownerId = owner?._id?.toString() || "unknown";
-
-        // Exclude admin-owned campaigns if the populated user has a role.
-        if (owner?.role === "admin") continue;
-
-        const key = `${ownerId}:${campaignName.trim().toLowerCase()}`;
-
-        if (!campaignMap.has(key)) {
-            campaignMap.set(key, {
-                name: campaignName.trim(),
-                username: owner?.username || "Unknown user",
-                email: owner?.email || "",
-                totalLinks: 0,
-                totalClicks: 0,
-                firstCreated: link.createdAt || null,
-                latestCreated: link.createdAt || null
+                return {
+                    name: campaign.name,
+                    username: owner.username || "Unknown user",
+                    email: owner.email || "",
+                    totalLinks: links.length,
+                    totalClicks: links.reduce(
+                        (total, link) => total + (Number(link.clicks) || 0),
+                        0
+                    ),
+                    firstCreated: dates.length
+                        ? new Date(Math.min(...dates))
+                        : null,
+                    latestCreated: dates.length
+                        ? new Date(Math.max(...dates))
+                        : campaign.createdAt || null
+                };
             });
-        }
 
-        const campaign = campaignMap.get(key);
 
-        campaign.totalLinks++;
-        campaign.totalClicks += Number(link.clicks) || 0;
-
-        if (link.createdAt) {
-            if (
-                !campaign.firstCreated ||
-                new Date(link.createdAt) < new Date(campaign.firstCreated)
-            ) {
-                campaign.firstCreated = link.createdAt;
-            }
-
-            if (
-                !campaign.latestCreated ||
-                new Date(link.createdAt) > new Date(campaign.latestCreated)
-            ) {
-                campaign.latestCreated = link.createdAt;
-            }
-        }
+        return res.render("routes/admin/routes/campaigns.ejs", {
+            campaigns
+        });
+    } catch (error) {
+        return res.status(500).send("Failed to load campaigns. Check Render logs.");
     }
-
-    const campaigns = [...campaignMap.values()].sort(
-        (a, b) => new Date(b.latestCreated || 0) - new Date(a.latestCreated || 0)
-    );
-
-    res.render("routes/admin/routes/campaigns.ejs", {
-        campaigns
-    });
 }));
 
 // Admin profile
