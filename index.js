@@ -79,14 +79,19 @@ app.use((req,res,next)=>{
 });
 
 
-app.get("/", (req, res) => {
-    return res.redirect(302, "/user/login");
-});
-
 //user
 app.use("/user",userOperations);
 app.use("/user",user);
 app.use("/admin",admin);
+
+// React landing page
+app.use(express.static(path.join(__dirname, "client", "dist")));
+
+app.get("/", (req, res) => {
+    res.sendFile(
+        path.join(__dirname, "client", "dist", "index.html")
+    );
+});
 
 mongoose.connection.once("connected", () => {
   app.listen(port, () => {
@@ -95,14 +100,15 @@ mongoose.connection.once("connected", () => {
 });
 
 
-//middleware
-app.use((req,res,next)=>{
-  next(new ExpressError(404,"Page not found"));
-});
-
 
 app.use((err,req,res,next)=>{
   let {status=500,message="Some error occured"}=err;
   res.status(status).render("routes/flash.ejs",{message});
+});
+
+
+//middleware
+app.use((req,res,next)=>{
+  next(new ExpressError(404,"Page not found"));
 });
 
