@@ -137,7 +137,7 @@ const FAQ=[['What is LinkPulse?','A URL shortening, link management and analytic
 function FAQSection(){const [o,setO]=useState(0);return <section className="light2" id="faq"><div className="wrap narrow"><h2 className="rv">Frequently asked questions</h2>
   {FAQ.map(([q,a],i)=> <div className={`faq ${o===i?'open':''}`} key={q}><h3><button aria-expanded={o===i} aria-controls={`f${i}`} onClick={()=>setO(o===i?-1:i)}>{q}<ChevronDown size={20}/></button></h3><div className="fa" id={`f${i}`}><p>{a}</p></div></div>)}</div></section>}
 function Final(){return <section className="dark final"><div className="wrap center"><h2 className="rv">Make your next link work harder.</h2><p className="lead">Create, manage, and understand your links in one connected place.</p>
-  <div className="cta"><Btn href={APP}>Get started</Btn><Btn href="#analytics" variant="ghost">Explore analytics</Btn></div><div className="ring small" aria-hidden="true"/></div></section>}
+  <div className="cta"><Btn href="/user/register">Get started</Btn><Btn href="#analytics" variant="ghost">Explore analytics</Btn></div><div className="ring small" aria-hidden="true"/></div></section>}
 function Footer(){return <footer><div className="wrap foot"><a href="#top" className="brand"><span className="logo"><Link2 size={18}/></span>LinkPulse</a>
   <nav aria-label="Footer">{NAV.map(([n,h])=> <a key={n} href={h}>{n}</a>)}<a href="#faq">FAQ</a></nav><small>© {new Date().getFullYear()} LinkPulse</small></div></footer>}
 
