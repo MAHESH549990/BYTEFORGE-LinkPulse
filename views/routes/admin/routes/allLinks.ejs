@@ -265,17 +265,25 @@
                                 <!-- Creation Date -->
                                 <td style="min-width:120px;">
                                     <div class="small fw-semibold">
-                                        <%= link.createdAt ? new Date(link.createdAt).toLocaleDateString("en-IN", {
-                                            day: "2-digit",
-                                            month: "short",
-                                            year: "numeric"
-                                        }) : "—" %>
+                                        <%= link.createdAt
+                                            ? new Date(link.createdAt).toLocaleDateString("en-IN", {
+                                                timeZone: "Asia/Kolkata",
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric"
+                                            })
+                                            : "—" %>
                                     </div>
+
                                     <div class="text-muted" style="font-size:11px;">
-                                        <%= link.createdAt ? new Date(link.createdAt).toLocaleTimeString("en-IN", {
-                                            hour: "2-digit",
-                                            minute: "2-digit"
-                                        }) : "" %>
+                                        <%= link.createdAt
+                                            ? new Date(link.createdAt).toLocaleTimeString("en-IN", {
+                                                timeZone: "Asia/Kolkata",
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                hour12: true
+                                            })
+                                            : "" %>
                                     </div>
                                 </td>
 
