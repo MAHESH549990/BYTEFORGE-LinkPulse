@@ -284,24 +284,24 @@
 
                                         <td class="text-nowrap">
                                             <div class="fw-semibold">
-                                                <%= new Date(visit.visitedAt)
-                                                    .toLocaleDateString("en-IN", {
-                                                        day: "2-digit",
-                                                        month: "short",
-                                                        year: "numeric"
-                                                    }) %>
+                                                <%= new Date(visit.visitedAt).toLocaleDateString("en-IN", {
+                                                    timeZone: "Asia/Kolkata",
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                }) %>
                                             </div>
 
                                             <small class="text-secondary">
-                                                <%= new Date(visit.visitedAt)
-                                                    .toLocaleTimeString("en-IN", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        second: "2-digit"
-                                                    }) %>
+                                                <%= new Date(visit.visitedAt).toLocaleTimeString("en-IN", {
+                                                    timeZone: "Asia/Kolkata",
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                    second: "2-digit",
+                                                    hour12: true
+                                                }) %>
                                             </small>
                                         </td>
-
                                         <td>
                                             <i class="fa-solid fa-globe
                                                       text-secondary me-1"></i>
