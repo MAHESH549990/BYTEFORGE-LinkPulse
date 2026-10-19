@@ -83,6 +83,33 @@
             font-size: 25px;
         }
     }
+    /* Top performing links */
+        .top-link-row {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .top-link-details {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .top-link-original,
+        .top-link-details .short-link {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .top-link-clicks {
+            min-width: 48px;
+            white-space: nowrap;
+        }
+
+        .top-link-rank {
+            width: 40px;
+            height: 40px;
+        }
 </style>
 
 <div class="analytics-page py-4">
@@ -286,67 +313,65 @@
                 </div>
             </div>
 
-            <!-- Top Links -->
-            <div class="col-12 col-lg-6">
-                <div class="analytics-card shadow-sm p-3 p-md-4">
-                    <h5 class="chart-heading mb-1">
-                        Top Performing Links
-                    </h5>
+           
+                <!-- Top Links -->
+                <div class="col-12 col-lg-6">
+                    <div class="analytics-card shadow-sm p-3 p-md-4 overflow-hidden">
 
-                    <p class="text-secondary small mb-3">
-                        Your five links with the highest click counters.
-                    </p>
+                        <h5 class="chart-heading mb-1">
+                            Top Performing Links
+                        </h5>
 
-                    <% if (topLinks.length === 0) { %>
+                        <p class="text-secondary small mb-3">
+                            Your five links with the highest click counters.
+                        </p>
 
-                        <div class="text-center py-5">
-                            <i class="fa-solid fa-link fs-2
-                                      text-secondary mb-3"></i>
+                        <% if (topLinks.length === 0) { %>
 
-                            <p class="text-secondary mb-0">
-                                You haven't created any links yet.
-                            </p>
-                        </div>
-
-                    <% } else { %>
-
-                        <% topLinks.forEach((link, index) => { %>
-                            <div class="d-flex align-items-center
-                                        gap-3 py-3
-                                        <%= index !== topLinks.length - 1
-                                            ? 'border-bottom' : '' %>">
-
-                                <div class="stat-icon flex-shrink-0">
-                                    <%= index + 1 %>
-                                </div>
-
-                                <div class="flex-grow-1 min-w-0">
-                                    <div class="fw-semibold short-link">
-                                        <%= link.shortUrl %>
-                                    </div>
-
-                                    <small class="text-secondary">
-                                        <%= link.originalUrl %>
-                                    </small>
-                                </div>
-
-                                <div class="text-end">
-                                    <div class="fw-bold">
-                                        <%= link.clicks || 0 %>
-                                    </div>
-
-                                    <small class="text-secondary">
-                                        clicks
-                                    </small>
-                                </div>
+                            <div class="text-center py-5">
+                                <i class="fa-solid fa-link fs-2 text-secondary mb-3"></i>
+                                <p class="text-secondary mb-0">
+                                    You haven't created any links yet.
+                                </p>
                             </div>
-                        <% }); %>
 
-                    <% } %>
+                        <% } else { %>
+
+                            <% topLinks.forEach((link, index) => { %>
+
+                                <div class="top-link-row d-flex align-items-center gap-2 py-3
+                                    <%= index !== topLinks.length - 1 ? 'border-bottom' : '' %>">
+
+                                    <div class="stat-icon top-link-rank flex-shrink-0">
+                                        <%= index + 1 %>
+                                    </div>
+
+                                    <div class="top-link-details flex-grow-1">
+                                        <div class="fw-semibold short-link">
+                                            <%= link.shortUrl %>
+                                        </div>
+
+                                        <div class="top-link-original text-secondary small"
+                                            title="<%= link.originalUrl %>">
+                                            <%= link.originalUrl %>
+                                        </div>
+                                    </div>
+
+                                    <div class="top-link-clicks text-end flex-shrink-0">
+                                        <div class="fw-bold">
+                                            <%= (link.clicks || 0).toLocaleString("en-IN") %>
+                                        </div>
+                                        <small class="text-secondary">clicks</small>
+                                    </div>
+
+                                </div>
+
+                            <% }); %>
+
+                        <% } %>
+
+                    </div>
                 </div>
-            </div>
-
-        </div>
 
         <!-- Recent Visits -->
         <div class="analytics-card shadow-sm p-3 p-md-4 mb-4">
