@@ -112,4 +112,18 @@ router.get("/logout",isAuthenticate,(req,res,next)=>{
   })
 })
 
+//privacy
+router.get("/privacy",(req,res)=>{
+    res.render("routes/privacy.ejs");
+})
+
+app.get("/about", (req, res) => {
+    res.render("routes/about.ejs");
+});
+
+app.get("/contact",(req,res)=>{
+    res.render("routes/contact.ejs");
+})
+
+
 module.exports=router;

@@ -6,6 +6,7 @@ const Link = require("../models/link.js");
 const Visit = require("../models/Visit.js");
 const asyncWrap=require("../utils/asyncWrap.js");
 const { isAdmin } = require("../middleware/adminMiddleware.js");
+const Campaign = require("../models/Campaign.js");
 
 // Replace isAdmin with your existing admin authorization middleware.
 router.get("/dashboard",isAdmin,asyncWrap(async (req, res) => {
@@ -115,6 +116,7 @@ router.get("/dashboard",isAdmin,asyncWrap(async (req, res) => {
 
 
 // View all users and their links
+// View all users, their links, and campaigns
 router.get("/users", isAdmin, asyncWrap(async (req, res) => {
     const users = await User.find({
         role: { $ne: "admin" }
@@ -122,17 +124,25 @@ router.get("/users", isAdmin, asyncWrap(async (req, res) => {
 
     const userIds = users.map(user => user._id);
 
-    const links = await Link.find({
-        createdBy: { $in: userIds }
-    })
-    .sort({ createdAt: -1 })
-    .lean();
+    const [links, campaigns] = await Promise.all([
+        Link.find({
+            createdBy: { $in: userIds }
+        })
+        .sort({ createdAt: -1 })
+        .lean(),
+
+        Campaign.find({
+            createdBy: { $in: userIds }
+        })
+        .sort({ createdAt: -1 })
+        .lean()
+    ]);
 
     const linksByUser = new Map();
+    const campaignsByUser = new Map();
 
     for (const link of links) {
         const userId = link.createdBy?.toString();
-
         if (!userId) continue;
 
         if (!linksByUser.has(userId)) {
@@ -142,13 +152,29 @@ router.get("/users", isAdmin, asyncWrap(async (req, res) => {
         linksByUser.get(userId).push(link);
     }
 
-    const usersWithLinks = users.map(user => ({
-        ...user,
-        links: linksByUser.get(user._id.toString()) || []
-    }));
+    for (const campaign of campaigns) {
+        const userId = campaign.createdBy?.toString();
+        if (!userId) continue;
+
+        if (!campaignsByUser.has(userId)) {
+            campaignsByUser.set(userId, []);
+        }
+
+        campaignsByUser.get(userId).push(campaign);
+    }
+
+    const usersWithDetails = users.map(user => {
+        const userId = user._id.toString();
+
+        return {
+            ...user,
+            links: linksByUser.get(userId) || [],
+            campaigns: campaignsByUser.get(userId) || []
+        };
+    });
 
     res.render("routes/admin/routes/viewUser.ejs", {
-        users: usersWithLinks
+        users: usersWithDetails
     });
 }));
 

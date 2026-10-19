@@ -1,0 +1,361 @@
+
+<%- layout("boilerplate/boiler") %>
+
+<style>
+    .about-page {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 55px 0;
+    }
+
+    .about-hero {
+        max-width: 800px;
+        margin: 0 auto 45px;
+        text-align: center;
+    }
+
+    .about-hero .brand-icon {
+        width: 65px;
+        height: 65px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f0ff;
+        color: #2563eb;
+        border-radius: 18px;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .about-hero h1 {
+        color: #172554;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .about-hero p {
+        color: #64748b;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .about-section {
+        margin-bottom: 45px;
+    }
+
+    .about-section-title {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 18px;
+    }
+
+    .about-card {
+        height: 100%;
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: #fff;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .about-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+    }
+
+    .member-avatar {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 18px;
+    }
+
+    .member-name {
+        color: #1e293b;
+        font-weight: 750;
+        font-size: 1.12rem;
+    }
+
+    .member-role {
+        color: #2563eb;
+        font-size: .85rem;
+        font-weight: 650;
+        margin-bottom: 12px;
+    }
+
+    .member-description {
+        color: #64748b;
+        line-height: 1.7;
+        font-size: .94rem;
+        margin-bottom: 0;
+    }
+
+    .about-info {
+        padding: 28px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+    }
+
+    .tech-badge {
+        display: inline-block;
+        padding: 8px 13px;
+        margin: 5px 5px 5px 0;
+        border-radius: 9px;
+        background: #f1f5f9;
+        color: #334155;
+        font-size: .88rem;
+        font-weight: 600;
+    }
+
+    .about-cta {
+        text-align: center;
+        padding: 35px 20px;
+        border-radius: 20px;
+        background: #172554;
+        color: white;
+    }
+
+    .about-cta p {
+        color: #cbd5e1;
+    }
+
+    @media (max-width: 576px) {
+        .about-page {
+            padding: 35px 0;
+        }
+
+        .about-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="about-page">
+    <div class="container">
+
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <div class="brand-icon">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <h1>About LinkPulse</h1>
+
+            <p class="mt-3">
+                Simplifying links. Understanding engagement.
+                Managing everything in one place.
+            </p>
+
+            <p>
+                LinkPulse is a URL shortening and link management platform
+                that helps users create short links, organize campaigns,
+                and monitor engagement through link analytics.
+            </p>
+        </section>
+
+        <!-- Mission -->
+        <section class="about-section">
+            <div class="about-info">
+                <h3 class="about-section-title">Our Mission</h3>
+
+                <p class="text-secondary mb-0" style="line-height: 1.8;">
+                    Our goal is to make link management simple and useful.
+                    LinkPulse brings shortened URLs, campaign organization,
+                    click tracking, and user-friendly dashboards together
+                    in one platform.
+                </p>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="about-section">
+            <h3 class="about-section-title">What LinkPulse Offers</h3>
+
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <div class="about-card">
+                        <div class="member-avatar">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <h5 class="fw-bold">Short Links</h5>
+                        <p class="member-description">
+                            Create and manage convenient shortened URLs.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="about-card">
+                        <div class="member-avatar">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h5 class="fw-bold">Analytics</h5>
+                        <p class="member-description">
+                            Monitor clicks and understand link engagement.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="about-card">
+                        <div class="member-avatar">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h5 class="fw-bold">Campaigns</h5>
+                        <p class="member-description">
+                            Organize links into campaigns for easier management.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="about-card">
+                        <div class="member-avatar">
+                            <i class="fa-solid fa-gauge-high"></i>
+                        </div>
+                        <h5 class="fw-bold">Dashboards</h5>
+                        <p class="member-description">
+                            Access useful link and activity information
+                            through user and admin dashboards.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section class="about-section">
+            <div class="text-center mb-4">
+                <h2 class="about-section-title">Meet Our Team</h2>
+                <p class="text-secondary">
+                    Five team members working together to build LinkPulse.
+                </p>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- Kartik -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-card">
+                        <div class="member-avatar">KK</div>
+                        <h4 class="member-name">Kartik Kumar</h4>
+                        <div class="member-role">Analytics & Data Visualization</div>
+                        <p class="member-description">
+                            Works on link analytics, transforming activity
+                            data into meaningful charts and graphs to help
+                            users understand link performance.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Neeraj -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-card">
+                        <div class="member-avatar">NJ</div>
+                        <h4 class="member-name">Neeraj Joshi</h4>
+                        <div class="member-role">Dashboard UI Development</div>
+                        <p class="member-description">
+                            Develops dashboard interfaces for users and
+                            administrators, focusing on clear layouts,
+                            navigation, and usability.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ashi -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-card">
+                        <div class="member-avatar">AG</div>
+                        <h4 class="member-name">Ashi Gupta</h4>
+                        <div class="member-role">Frontend Development</div>
+                        <p class="member-description">
+                            Works on frontend design and responsive
+                            interfaces to provide a consistent experience
+                            across the LinkPulse platform.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Saurav -->
+                <div class="col-md-6 col-lg-6">
+                    <div class="about-card">
+                        <div class="member-avatar">SB</div>
+                        <h4 class="member-name">Saurav Bhatt</h4>
+                        <div class="member-role">Backend & Application Routing</div>
+                        <p class="member-description">
+                            Handles backend routes, EJS page integration,
+                            middleware, and the application flow that
+                            connects frontend pages with server functionality.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mahesh -->
+                <div class="col-md-6 col-lg-6">
+                    <div class="about-card">
+                        <div class="member-avatar">MB</div>
+                        <h4 class="member-name">Mahesh Bhatt</h4>
+                        <div class="member-role">Full-Stack Development</div>
+                        <p class="member-description">
+                            Works across the application's frontend and
+                            backend, including authentication, link
+                            management, campaign functionality, database
+                            integration, and application deployment.
+                            Also interested in integrating AI/ML capabilities
+                            into full-stack applications.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Technology -->
+        <section class="about-section">
+            <div class="about-info">
+                <h3 class="about-section-title">Technology Stack</h3>
+
+                <p class="text-secondary">
+                    LinkPulse is built using modern web technologies.
+                </p>
+
+                <div>
+                    <span class="tech-badge">Node.js</span>
+                    <span class="tech-badge">Express.js</span>
+                    <span class="tech-badge">MongoDB</span>
+                    <span class="tech-badge">Mongoose</span>
+                    <span class="tech-badge">EJS</span>
+                    <span class="tech-badge">Bootstrap</span>
+                    <span class="tech-badge">JavaScript</span>
+                    <span class="tech-badge">Passport.js</span>
+                    <span class="tech-badge">Render</span>
+                    <span class="tech-badge">Git & GitHub</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer CTA -->
+        <section class="about-cta">
+            <h3 class="fw-bold">Built Together with BYTEFORGE</h3>
+            <p class="mt-2 mb-4">
+                A collaborative project focused on simplifying link
+                management and understanding engagement.
+            </p>
+
+            <a href="/" class="btn btn-light rounded-pill px-4 fw-semibold">
+                <i class="fa-solid fa-house me-2"></i>
+                Back to Home
+            </a>
+        </section>
+
+    </div>
+</div>

@@ -1,0 +1,341 @@
+
+<%- layout("boilerplate/boiler") %>
+
+<style>
+    .contact-page {
+        min-height: 100vh;
+        background: #f8fafc;
+        padding: 55px 0;
+    }
+
+    .contact-hero {
+        max-width: 750px;
+        margin: 0 auto 40px;
+        text-align: center;
+    }
+
+    .contact-icon {
+        width: 65px;
+        height: 65px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 18px;
+        background: #e8f0ff;
+        color: #2563eb;
+        font-size: 27px;
+        margin-bottom: 20px;
+    }
+
+    .contact-hero h1 {
+        color: #172554;
+        font-weight: 800;
+        font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .contact-hero p {
+        color: #64748b;
+        line-height: 1.8;
+    }
+
+    .contact-card {
+        height: 100%;
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: #fff;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+    }
+
+    .member-avatar {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 15px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 18px;
+    }
+
+    .member-name {
+        color: #1e293b;
+        font-weight: 750;
+        font-size: 1.2rem;
+    }
+
+    .member-role {
+        color: #64748b;
+        font-size: .9rem;
+        margin-bottom: 20px;
+    }
+
+    .contact-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-top: 16px;
+        min-width: 0;
+    }
+
+    .detail-icon {
+        color: #2563eb;
+        width: 18px;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    .detail-label {
+        display: block;
+        color: #94a3b8;
+        font-size: .78rem;
+        margin-bottom: 3px;
+    }
+
+    .detail-value {
+        color: #334155;
+        font-size: .91rem;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-value a {
+        color: #334155;
+        text-decoration: none;
+    }
+
+    .detail-value a:hover {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+
+    .contact-footer {
+        margin-top: 35px;
+        padding: 30px 20px;
+        text-align: center;
+        background: #172554;
+        color: white;
+        border-radius: 20px;
+    }
+
+    .contact-footer p {
+        color: #cbd5e1;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 576px) {
+        .contact-page {
+            padding: 35px 0;
+        }
+
+        .contact-card {
+            padding: 21px;
+        }
+    }
+</style>
+
+<div class="contact-page">
+    <div class="container">
+
+        <!-- Page Heading -->
+        <section class="contact-hero">
+            <div class="contact-icon">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+
+            <h1>Contact Our Team</h1>
+
+            <p class="mt-3">
+                Have a question about LinkPulse? Get in touch with
+                our team. We're happy to hear from you.
+            </p>
+        </section>
+
+        <!-- Team Contact Cards -->
+        <div class="row g-4">
+
+            <!-- Neeraj Joshi -->
+            <div class="col-md-6 col-lg-4">
+                <div class="contact-card">
+                    <div class="member-avatar">NJ</div>
+
+                    <h4 class="member-name">Neeraj Joshi</h4>
+                    <p class="member-role">Dashboard UI Development</p>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-envelope detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Email Address</span>
+                            <div class="detail-value">
+                                <a href="mailto:nj5607184@gmail.com">
+                                    nj5607184@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-phone detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Contact Number</span>
+                            <div class="detail-value">
+                                <a href="tel:7060314623">7060314623</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ashi Gupta -->
+            <div class="col-md-6 col-lg-4">
+                <div class="contact-card">
+                    <div class="member-avatar">AG</div>
+
+                    <h4 class="member-name">Ashi Gupta</h4>
+                    <p class="member-role">Frontend Development</p>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-envelope detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Email Address</span>
+                            <div class="detail-value">
+                                <a href="mailto:guptaashi042@gmail.com">
+                                    guptaashi042@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-phone detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Contact Number</span>
+                            <div class="detail-value">
+                                <a href="tel:9286728967">9286728967</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saurav Bhatt -->
+            <div class="col-md-6 col-lg-4">
+                <div class="contact-card">
+                    <div class="member-avatar">SB</div>
+
+                    <h4 class="member-name">Saurav Bhatt</h4>
+                    <p class="member-role">Backend Development</p>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-envelope detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Email Address</span>
+                            <div class="detail-value">
+                                <a href="mailto:sauravbhatt579@gmail.com">
+                                    sauravbhatt579@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-phone detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Contact Number</span>
+                            <div class="detail-value">
+                                <a href="tel:7983900400">7983900400</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mahesh Bhatt -->
+            <div class="col-md-6 col-lg-6">
+                <div class="contact-card">
+                    <div class="member-avatar">MB</div>
+
+                    <h4 class="member-name">Mahesh Bhatt</h4>
+                    <p class="member-role">Full-Stack Development</p>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-envelope detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Email Address</span>
+                            <div class="detail-value">
+                                <a href="mailto:maheshbhattdev07@gmail.com">
+                                    maheshbhattdev07@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-phone detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Contact Number</span>
+                            <div class="detail-value">
+                                <a href="tel:7668536166">7668536166</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartik Kumar -->
+            <div class="col-md-6 col-lg-6">
+                <div class="contact-card">
+                    <div class="member-avatar">KK</div>
+
+                    <h4 class="member-name">Kartik Kumar</h4>
+                    <p class="member-role">Analytics & Data Visualization</p>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-envelope detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Email Address</span>
+                            <div class="detail-value">
+                                <a href="mailto:kumarkartik2146@gmail.com">
+                                    kumarkartik2146@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <i class="fa-solid fa-phone detail-icon"></i>
+                        <div>
+                            <span class="detail-label">Contact Number</span>
+                            <div class="detail-value">
+                                <a href="tel:6396634620">63966 34620</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <section class="contact-footer">
+            <h3 class="fw-bold">BYTEFORGE — LinkPulse Team</h3>
+
+            <p class="mt-2">
+                Working together to make link management simpler.
+            </p>
+
+            <a href="/" class="btn btn-light rounded-pill px-4 mt-4 fw-semibold">
+                <i class="fa-solid fa-house me-2"></i>
+                Back to Home
+            </a>
+        </section>
+
+    </div>
+</div>
