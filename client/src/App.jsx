@@ -25,7 +25,7 @@ function Navbar(){
       </a>
   
       </nav>
-    <div className="navact"><a className="signin" href="/user/login">Sign in</a><Btn href="demp">Create a free link</Btn>
+    <div className="navact"><a className="signin" href="/user/login">Sign in</a><Btn href="/user/register">Create a free link</Btn>
       <button className="burger" aria-label="Toggle menu" aria-expanded={o} aria-controls="menu" onClick={()=>setO(!o)}>{o?<X/>:<Menu/>}</button></div>
   </div></header>
 }
@@ -36,7 +36,6 @@ function Hero(){
       <p className="eyebrow hl">Link management · Redirect rules · Analytics</p>
       <h1 className="hl">Every link has a <em>bigger story.</em></h1>
       <p className="lead hl">Create smarter short links, control every destination, and turn every click into insight.</p>
-      <div className="cta hl"><Btn href="#demo">Create your first link <ArrowRight size={18}/></Btn><Btn href="#journey" variant="ghost">Explore the platform</Btn></div>
     </div>
     <div className="herovis">{fail?<div className="ring" aria-hidden="true"/>:
       <Suspense fallback={<div className="ring" aria-hidden="true"/>}><Hero3D onFail={()=>setFail(true)}/></Suspense>}</div>
