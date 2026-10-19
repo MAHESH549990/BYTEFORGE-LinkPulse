@@ -256,11 +256,18 @@ router.get("/links/:id/analytics", isAuthenticate, asyncWrap( async (req, res) =
     }
 }));
 
+function getIndiaDateKey(date) {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(date);
+}
 //analytics chart 
-
 router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
     try {
-        // Choose the analytics period: 7, 30, or 90 days
+        // Allowed analytics periods
         const allowedPeriods = [7, 30, 90];
         const requestedDays = Number(req.query.days) || 7;
 
@@ -268,9 +275,20 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
             ? requestedDays
             : 7;
 
-        const startDate = new Date();
-        startDate.setHours(0, 0, 0, 0);
-        startDate.setDate(startDate.getDate() - (days - 1));
+        // Get today's date according to India timezone
+        const indiaToday = getIndiaDateKey(new Date());
+        const [year, month, day] = indiaToday.split("-").map(Number);
+
+        // Convert midnight IST to the equivalent UTC timestamp
+        const startDate = new Date(
+            Date.UTC(year, month - 1, day) -
+            (5 * 60 + 30) * 60 * 1000
+        );
+
+        // Start from midnight IST for the selected period
+        startDate.setUTCDate(
+            startDate.getUTCDate() - (days - 1)
+        );
 
         // Get only the logged-in user's links
         const links = await Link.find({
@@ -279,7 +297,7 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
 
         const linkIds = links.map(link => link._id);
 
-        // Get visit records belonging to these links
+        // Get visits within the selected period
         const visits = linkIds.length
             ? await Visit.find({
                 link: { $in: linkIds },
@@ -287,18 +305,15 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
             }).sort({ visitedAt: -1 })
             : [];
 
-        // Prepare one entry for every day in the selected period
+        // Prepare daily click counts using India dates
         const dailyMap = new Map();
 
         for (let i = 0; i < days; i++) {
             const date = new Date(startDate);
-            date.setDate(startDate.getDate() + i);
 
-            const key = [
-                date.getFullYear(),
-                String(date.getMonth() + 1).padStart(2, "0"),
-                String(date.getDate()).padStart(2, "0")
-            ].join("-");
+            date.setUTCDate(date.getUTCDate() + i);
+
+            const key = getIndiaDateKey(date);
 
             dailyMap.set(key, 0);
         }
@@ -307,19 +322,18 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
         const deviceCounts = {};
         const referrerCounts = {};
 
+        // Process visits
         for (const visit of visits) {
-            const date = new Date(visit.visitedAt);
-
-            const key = [
-                date.getFullYear(),
-                String(date.getMonth() + 1).padStart(2, "0"),
-                String(date.getDate()).padStart(2, "0")
-            ].join("-");
+            const key = getIndiaDateKey(visit.visitedAt);
 
             if (dailyMap.has(key)) {
-                dailyMap.set(key, dailyMap.get(key) + 1);
+                dailyMap.set(
+                    key,
+                    dailyMap.get(key) + 1
+                );
             }
 
+            // Browser detection
             const ua = visit.userAgent || "";
 
             let browser = "Other";
@@ -337,6 +351,7 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
                 browser = "Safari";
             }
 
+            // Device detection
             if (/iPad|Tablet/i.test(ua)) {
                 device = "Tablet";
             } else if (/iPhone|Android|Mobile/i.test(ua)) {
@@ -349,11 +364,10 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
             deviceCounts[device] =
                 (deviceCounts[device] || 0) + 1;
 
+            // Referrer detection
             let referrer = visit.referrer || "Direct";
 
-            if (referrer === "Direct") {
-                referrer = "Direct";
-            } else {
+            if (referrer !== "Direct") {
                 try {
                     const hostname = new URL(referrer).hostname;
                     referrer = hostname.replace(/^www\./, "");
@@ -366,18 +380,18 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
                 (referrerCounts[referrer] || 0) + 1;
         }
 
-        // All-time click count from each link's counter
+        // All-time click count from each link
         const totalClicks = links.reduce(
             (sum, link) => sum + (link.clicks || 0),
             0
         );
 
-        // Top links for this logged-in user
+        // Top 5 links by clicks
         const topLinks = [...links]
             .sort((a, b) => (b.clicks || 0) - (a.clicks || 0))
             .slice(0, 5);
 
-        // Recent recorded visits
+        // Recent visits
         const recentVisits = visits.slice(0, 10);
 
         res.render("routes/analytics.ejs", {
@@ -386,14 +400,19 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
             days,
             totalClicks,
             periodClicks: visits.length,
+
             dailyLabels: [...dailyMap.keys()],
             dailyClicks: [...dailyMap.values()],
+
             browserLabels: Object.keys(browserCounts),
             browserValues: Object.values(browserCounts),
+
             deviceLabels: Object.keys(deviceCounts),
             deviceValues: Object.values(deviceCounts),
+
             referrerLabels: Object.keys(referrerCounts),
             referrerValues: Object.values(referrerCounts),
+
             topLinks,
             recentVisits
         });
@@ -403,7 +422,6 @@ router.get("/analytics", isAuthenticate, asyncWrap(async (req, res) => {
         res.status(500).send("Unable to load analytics dashboard");
     }
 }));
-
 
 
 module.exports=router;
