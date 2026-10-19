@@ -182,15 +182,42 @@ router.get("/users", isAdmin, asyncWrap(async (req, res) => {
     });
 }));
 
-// View all user links
+// View all user links with their campaigns
 router.get("/links", isAdmin, asyncWrap(async (req, res) => {
-    const links = await Link.find()
-        .populate("createdBy", "username email")
-        .sort({ createdAt: -1 })
-        .lean();
+    const [links, campaigns] = await Promise.all([
+        Link.find()
+            .populate("createdBy", "username email")
+            .sort({ createdAt: -1 })
+            .lean(),
+
+        Campaign.find()
+            .select("name links")
+            .lean()
+    ]);
+
+    // Map each link ID to its campaign names
+    const campaignMap = new Map();
+
+    for (const campaign of campaigns) {
+        for (const linkId of campaign.links || []) {
+            const id = linkId.toString();
+
+            if (!campaignMap.has(id)) {
+                campaignMap.set(id, []);
+            }
+
+            campaignMap.get(id).push(campaign.name);
+        }
+    }
+
+    // Attach campaign names to each link
+    const linksWithCampaigns = links.map(link => ({
+        ...link,
+        campaignNames: campaignMap.get(link._id.toString()) || []
+    }));
 
     res.render("routes/admin/routes/allLinks.ejs", {
-        links
+        links: linksWithCampaigns
     });
 }));
 

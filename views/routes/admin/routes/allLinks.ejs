@@ -74,7 +74,7 @@
                     <div>
                         <p class="text-muted small mb-1">Campaign Links</p>
                         <h4 class="fw-bold mb-0">
-                            <%= links.filter(link => link.campaignName || link.campaign).length %>
+                          <%= links.filter(link => link.campaignNames.length > 0).length %>
                         </h4>
                     </div>
                 </div>
@@ -179,14 +179,13 @@
                                 data-index="<%= index %>"
                                 data-clicks="<%= Number(link.clicks) || 0 %>"
                                 data-date="<%= link.createdAt ? new Date(link.createdAt).getTime() : 0 %>"
-                                data-search="<%= [
-                                    link.originalUrl,
-                                    link.shortUrl,
-                                    link.createdBy?.username,
-                                    link.createdBy?.email,
-                                    link.campaignName,
-                                    typeof link.campaign === 'object' ? link.campaign?.name : link.campaign
-                                ].filter(Boolean).join(' ').toLowerCase() %>">
+                                data-search=<%= [
+                                            link.originalUrl,
+                                            link.shortUrl,
+                                            link.createdBy?.username,
+                                            link.createdBy?.email,
+                                            ...(link.campaignNames || [])
+                                        ].filter(Boolean).join(' ').toLowerCase() %>
 
                                 <td class="ps-3 text-muted row-number">
                                     <%= index + 1 %>
@@ -246,21 +245,18 @@
                                 </td>
 
                                 <!-- Campaign -->
-                                <td style="min-width:130px;">
-                                    <% const campaignName = typeof link.campaign === "object"
-                                        ? (link.campaign?.name || link.campaignName)
-                                        : (link.campaignName || link.campaign); %>
-
-                                    <% if (campaignName) { %>
-                                        <span class="badge rounded-pill text-bg-warning">
-                                            <i class="fa-solid fa-bullhorn me-1"></i>
-                                            <%= campaignName %>
-                                        </span>
+                                <td style="min-width:150px;">
+                                    <% if (link.campaignNames.length > 0) { %>
+                                        <% link.campaignNames.forEach(name => { %>
+                                            <span class="badge rounded-pill text-bg-warning me-1 mb-1">
+                                                <i class="fa-solid fa-bullhorn me-1"></i>
+                                                <%= name %>
+                                            </span>
+                                        <% }) %>
                                     <% } else { %>
                                         <span class="text-muted small">No campaign</span>
                                     <% } %>
                                 </td>
-
                                 <!-- Clicks -->
                                 <td>
                                     <span class="fw-bold">
