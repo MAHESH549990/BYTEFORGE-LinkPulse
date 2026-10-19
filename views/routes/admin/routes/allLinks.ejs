@@ -246,7 +246,7 @@
 
                                 <!-- Campaign -->
                                 <td style="min-width:150px;">
-                                    <% if (link.campaignNames.length > 0) { %>
+                                    <% if (link.campaignNames && link.campaignNames.length > 0) { %>
                                         <% link.campaignNames.forEach(name => { %>
                                             <span class="badge rounded-pill text-bg-warning me-1 mb-1">
                                                 <i class="fa-solid fa-bullhorn me-1"></i>

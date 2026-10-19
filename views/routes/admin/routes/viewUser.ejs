@@ -168,7 +168,7 @@
                                 </td>
 
                                 <td>
-                                    <%= (user.links || []).filter(link => link.campaignName || link.campaign).length %>
+                                    <%= links.filter(link => link.campaignNames?.length > 0).length %>
                                 </td>
 
                                 <td>
@@ -231,16 +231,19 @@
                                                                         <%= link.shortUrl || "—" %>
                                                                     </td>
 
-                                                                    <td>
-                                                                        <% if (link.campaignName || link.campaign) { %>
-                                                                            <span class="badge text-bg-warning">
-                                                                                <%= typeof link.campaign === "object" ? (link.campaign.name || link.campaignName || "Campaign") : (link.campaignName || link.campaign) %>
+                                                                 <!-- Campaign -->
+                                                                <td style="min-width:150px;">
+                                                                    <% if (link.campaignNames && link.campaignNames.length > 0) { %>
+                                                                        <% link.campaignNames.forEach(name => { %>
+                                                                            <span class="badge rounded-pill text-bg-warning me-1 mb-1">
+                                                                                <i class="fa-solid fa-bullhorn me-1"></i>
+                                                                                <%= name %>
                                                                             </span>
-                                                                        <% } else { %>
-                                                                            <span class="text-muted">No campaign</span>
-                                                                        <% } %>
-                                                                    </td>
-
+                                                                        <% }) %>
+                                                                    <% } else { %>
+                                                                        <span class="text-muted small">No campaign</span>
+                                                                    <% } %>
+                                                                </td>
                                                                     <td>
                                                                         <span class="badge text-bg-success">
                                                                             <%= Number(link.clicks) || 0 %>
